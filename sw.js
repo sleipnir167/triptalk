@@ -1,5 +1,5 @@
 // TripTalk Service Worker（scripts/build-sw.mjs で自動生成）
-const VERSION = '4c9567d50f';
+const VERSION = 'a72361f803';
 const CACHE = 'triptalk-' + VERSION;
 const RUNTIME = 'triptalk-runtime';
 const ASSETS = [
@@ -18,6 +18,7 @@ const ASSETS = [
   "./js/content.js",
   "./js/data/dialogues.js",
   "./js/data/scenes.js",
+  "./js/deco.js",
   "./js/fx.js",
   "./js/gamify.js",
   "./js/icons.js",

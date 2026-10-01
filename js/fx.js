@@ -1,6 +1,7 @@
 // 演出: 紙吹雪、+XP フロート、きらめき
 let canvas, cx, parts = [], running = false, lastT = 0;
-const COLORS = ['#5b8cff', '#a855f7', '#ff7a59', '#ffc24b', '#2ed3a1', '#ff5d8f', '#22d3ee'];
+const COLORS = ['#ffd36e', '#ff8ad8', '#8be9ff', '#c4a5ff', '#ffffff', '#ffb347', '#7cf5c4'];
+const GOLD = ['#fff3c4', '#ffd36e', '#ffe9a8', '#ffffff', '#ffc1ec'];
 
 function ensure() {
   if (canvas) return;
@@ -25,7 +26,8 @@ function loop(t) {
   for (const p of parts) {
     p.vy += p.g * dt; p.vx *= Math.pow(0.992, dt); p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt; p.life -= dt;
     cx.save();
-    cx.globalAlpha = Math.min(1, p.life / 40);
+    cx.globalAlpha = Math.min(1, p.life / (p.fade || 40));
+    if (p.glow) { cx.shadowColor = p.c; cx.shadowBlur = p.glow; }
     cx.translate(p.x, p.y); cx.rotate(p.rot);
     cx.fillStyle = p.c;
     if (p.shape === 0) cx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2);
@@ -81,4 +83,43 @@ export function floatText(text, anchor, cls = '') {
 export function shake(el) {
   if (!el) return;
   el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+}
+
+const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/** タップした所に舞う小さな金色のきらきら（妖精の粉のイメージ） */
+let lastDust = 0;
+export function pixieDust(x, y) {
+  const now = performance.now();
+  if (now - lastDust < 70 || reduced()) return;
+  lastDust = now;
+  ensure();
+  for (let i = 0; i < 7; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const sp = 0.6 + Math.random() * 1.8;
+    parts.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 0.6, g: 0.035, s: 5 + Math.random() * 7, c: GOLD[i % GOLD.length], rot: Math.random() * 3, vr: 0.12, life: 26 + Math.random() * 22, fade: 22, shape: i % 3 === 0 ? 1 : 2, glow: 8 });
+  }
+  start();
+}
+
+/** 夜空に打ち上がる花火（レベルアップ・お祝いに） */
+export function fireworks({ bursts = 4, gap = 380 } = {}) {
+  if (reduced()) return;
+  ensure();
+  const palettes = [['#ffd36e', '#fff3c4', '#ffb347'], ['#ff8ad8', '#ffc1ec', '#ffffff'], ['#8be9ff', '#c4f3ff', '#ffffff'], ['#c4a5ff', '#e9ddff', '#ffd36e'], ['#7cf5c4', '#ffffff', '#8be9ff']];
+  for (let b = 0; b < bursts; b++) {
+    setTimeout(() => {
+      const x = innerWidth * (0.18 + Math.random() * 0.64);
+      const y = innerHeight * (0.14 + Math.random() * 0.3);
+      const pal = palettes[(b + Math.floor(Math.random() * 5)) % palettes.length];
+      const n = 46;
+      for (let i = 0; i < n; i++) {
+        const a = (i / n) * Math.PI * 2 + Math.random() * 0.08;
+        const sp = 3.2 + Math.random() * 2.6;
+        parts.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, g: 0.05, s: 4 + Math.random() * 3, c: pal[i % pal.length], rot: 0, vr: 0, life: 70 + Math.random() * 30, fade: 45, shape: 1, glow: 12 });
+      }
+      for (let i = 0; i < 10; i++) parts.push({ x, y, vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2, g: 0.02, s: 10, c: '#ffffff', rot: 0, vr: 0.2, life: 50, fade: 30, shape: 2, glow: 14 });
+      start();
+    }, b * gap);
+  }
 }

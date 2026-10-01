@@ -4,7 +4,7 @@ import { icon } from './icons.js';
 import { state, save } from './store.js';
 import { speak, stopSpeaking, listen, sttEngine } from './speech.js';
 import { sfx } from './sfx.js';
-import { confetti } from './fx.js';
+import { confetti, fireworks } from './fx.js';
 import { getCard, retrievability, mastery, MASTERY_LABEL, resetCard, DAY, intervalDays } from './srs.js';
 import { sceneById, scenes, allItems, hash, reindex, getItem } from './content.js';
 import { aiReady, explainItem, askFollowup, aiWaitHint, generatePhrases } from './ai.js';
@@ -366,7 +366,7 @@ export function addToMyWords({ en, ja, ex = '', exJa = '', note = '' }, { quiet 
 }
 
 // ---- AIで旅のフレーズを作る ----
-const GEN_TOPICS = ['レンタカーを借りて運転する', 'ダイビング・シュノーケリング', '子連れでレストラン', 'スポーツ観戦', 'ワイナリー・酒蔵見学', 'ヘアサロン・ネイル', 'ホームステイ先の家族と', 'ビジネスの会食', 'ヴィーガン・食事制限', '遊園地・テーマパーク'];
+const GEN_TOPICS = ['ディズニークルーズの船内で', '寄港地・プライベートアイランドで', 'キャラクターグリーティングで', 'レンタカーを借りて運転する', 'ダイビング・シュノーケリング', '子連れでレストラン', 'スポーツ観戦', 'ワイナリー・酒蔵見学', 'ヘアサロン・ネイル', 'ホームステイ先の家族と', 'ビジネスの会食', 'ヴィーガン・食事制限', '遊園地・テーマパーク'];
 export async function openPhraseGenerator({ onAdded } = {}) {
   const trip = state.settings.trip?.name || '';
   let items = [];
@@ -460,6 +460,7 @@ export function showResults(host, { title = 'おつかれさま！', emoji = '�
     if (row && !e.target.closest('[data-say]')) { const it = getItem(row.dataset.id); if (it) openItem(it); }
   });
   sfx.play('finish');
-  if (pct >= 0.8) setTimeout(() => confetti({ count: pct >= 0.95 ? 200 : 110 }), 250);
+  if (pct >= 0.95) setTimeout(() => fireworks({ bursts: 4 }), 250);
+  else if (pct >= 0.8) setTimeout(() => confetti({ count: 110 }), 250);
   setTimeout(() => { if (host.isConnected && $('.results', host)) flushCelebrations(); }, 1200);
 }

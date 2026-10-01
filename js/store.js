@@ -19,6 +19,7 @@ export const DEFAULT_SETTINGS = {
   sttLocal: false,
   sfx: true,
   sfxVolume: 0.7,
+  sparkle: true, // タップでキラキラ
   theme: 'auto',
   chatAutoSend: true,
   chatLevel: 'normal',

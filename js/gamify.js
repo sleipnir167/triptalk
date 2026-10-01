@@ -3,7 +3,7 @@ import { state, save } from './store.js';
 import { bus } from './bus.js';
 import { todayKey, modal, toast, esc } from './ui.js';
 import { sfx } from './sfx.js';
-import { confetti, floatText } from './fx.js';
+import { confetti, floatText, fireworks } from './fx.js';
 import { review } from './srs.js';
 import { scenes, sceneItems } from './content.js';
 
@@ -59,7 +59,8 @@ export function addXP(n, anchor) {
   if (after.level > before) queueCelebration(() => celebrateLevel(after));
   if (wasBelow && d.xp >= goal) {
     sfx.play('goal');
-    toast('今日の目標を達成しました！', { emoji: '🎯', type: 'success' });
+    toast('今日の目標を達成しました！', { emoji: '🌟', type: 'success' });
+    fireworks({ bursts: 2 });
     state.stats.counters.goals = (state.stats.counters.goals || 0) + 1;
   }
   bus.emit('xp');
@@ -94,14 +95,15 @@ export function recordAnswer(item, { ok, grade, xp = 0, anchor, speak = false } 
 
 async function celebrateLevel(info) {
   sfx.play('levelup');
-  confetti({ count: 180 });
+  fireworks({ bursts: 5 });
+  confetti({ count: 90 });
   await modal({
     cls: 'celebrate',
     body: `<div class="celebrate-box">
-      <div class="celebrate-kicker">LEVEL UP!</div>
+      <div class="celebrate-kicker">Level Up!</div>
       <div class="celebrate-level"><span>Lv.</span>${info.level}</div>
       <div class="celebrate-title">${info.emoji} ${esc(info.title)}</div>
-      <p class="muted">この調子で旅の準備を続けましょう！</p>
+      <p class="muted">✦ この調子で、夢の旅の準備を続けましょう ✦</p>
     </div>`,
     actions: [{ label: 'やったね！', cls: 'btn-primary btn-block', value: true }],
   });
@@ -178,11 +180,12 @@ export function stampHTML(b, earned, i = 0) {
 
 async function celebrateBadge(b) {
   sfx.play('badge');
-  confetti({ count: 90, spread: 0.7 });
+  fireworks({ bursts: 2 });
+  confetti({ count: 60, spread: 0.7 });
   await modal({
     cls: 'celebrate',
     body: `<div class="celebrate-box">
-      <div class="celebrate-kicker">NEW STAMP!</div>
+      <div class="celebrate-kicker">New Stamp!</div>
       <div class="stamp-drop">${stampHTML(b, Date.now())}</div>
       <div class="celebrate-title">${esc(b.desc)}</div>
       <p class="muted">パスポートにスタンプが押されました</p>

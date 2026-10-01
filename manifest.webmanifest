@@ -7,8 +7,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#0a0f24",
-  "theme_color": "#0b1026",
+  "background_color": "#0d0b33",
+  "theme_color": "#0d0b33",
   "lang": "ja",
   "categories": ["education", "travel"],
   "icons": [

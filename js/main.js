@@ -8,13 +8,15 @@ import { initVoices } from './speech.js';
 import { installTapSounds, toast, h, $ } from './ui.js';
 import { bus } from './bus.js';
 import { ensureBuiltin } from './ai.js';
+import { initSky } from './deco.js';
+import { pixieDust } from './fx.js';
 
 export function applyTheme() {
   const t = state.settings.theme;
   const root = document.documentElement;
   if (t === 'auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', t);
   const dark = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0b1026' : '#eef2ff');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0d0b33' : '#f6f1ff');
 }
 
 async function boot() {
@@ -27,8 +29,11 @@ async function boot() {
   renderNav();
   initVoices();
   installTapSounds();
+  initSky();
   const unlock = () => unlockAudio();
   document.addEventListener('pointerdown', unlock, { passive: true });
+  // タップした所に小さなきらきら（設定でオフにできる）
+  document.addEventListener('pointerdown', (e) => { if (state.settings.sparkle !== false && e.pointerType !== 'pen') pixieDust(e.clientX, e.clientY); }, { passive: true });
   document.addEventListener('keydown', unlock);
   window.addEventListener('hashchange', route);
   await route();

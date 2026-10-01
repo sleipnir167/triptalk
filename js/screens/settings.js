@@ -82,6 +82,7 @@ export default {
 
         ${sec('look', '表示・効果音', 'sun', `
           ${row('テーマ', seg('theme', st.theme, [['auto', '自動'], ['dark', 'ダーク'], ['light', 'ライト']]))}
+          ${row('タップでキラキラ', sw('sparkle', st.sparkle !== false), 'さわった所に小さな光が舞います（動きを減らす設定の端末では表示しません）')}
           ${row('効果音', sw('sfx', st.sfx))}
           ${row('効果音の音量', `<input type="range" min="0.1" max="1" step="0.05" value="${st.sfxVolume}" data-range="sfxVolume"><output>${Math.round(st.sfxVolume * 100)}%</output>`)}
           <div class="row gap-8 wrap">${['correct', 'wrong', 'combo', 'levelup', 'badge'].map((s) => `<button class="btn btn-ghost btn-sm" data-sfx="${s}">${{ correct: '正解', wrong: '不正解', combo: 'コンボ', levelup: 'レベルアップ', badge: 'スタンプ' }[s]}</button>`).join('')}</div>

@@ -1,37 +1,59 @@
 /* =========================================================
    TripTalk — 旅の英会話トレーナー
-   テーマ: 夜間飛行（ダーク）/ 昼の空（ライト）
+   テーマ: 魔法の夜（ダーク）/ 昼のパレード（ライト）
+   ※ 特定の作品のロゴ・キャラクター・専用フォントは使わず、おとぎ話の雰囲気だけを表現
    ========================================================= */
 
 :root {
   color-scheme: light;
-  --bg: #eef2fb;
-  --side-bg: rgba(255, 255, 255, 0.62);
-  --surface: rgba(255, 255, 255, 0.78);
+  --bg: #f6f1ff;
+  --side-bg: rgba(255, 255, 255, 0.66);
+  --surface: rgba(255, 255, 255, 0.8);
   --surface-solid: #ffffff;
-  --surface-2: rgba(20, 30, 70, 0.045);
-  --surface-3: rgba(20, 30, 70, 0.08);
-  --border: rgba(20, 30, 70, 0.09);
-  --text: #141a33;
-  --text-2: #3f4870;
-  --muted: #6b7596;
-  --primary: #4f6bff;
-  --primary-2: #8b5cf6;
-  --accent: #ff7a59;
-  --accent-2: #ffb347;
+  --surface-2: rgba(76, 50, 160, 0.05);
+  --surface-3: rgba(76, 50, 160, 0.09);
+  --border: rgba(76, 50, 160, 0.12);
+  --gold-line: rgba(214, 160, 40, 0.35);
+  --text: #1f1846;
+  --text-2: #463c7a;
+  --muted: #7368a3;
+  --primary: #4f46e5;
+  --primary-2: #a14ce0;
+  --accent: #f5b333;
+  --accent-2: #ff6fa8;
+  --accent-text: #b7791f;
+  --gold-a: #ffe39a;
+  --gold-b: #f2a922;
+  --on-gold: #3d2600;
   --ok: #0f9f6e;
   --ok-bg: rgba(18, 184, 134, 0.12);
   --ng: #e03150;
   --ng-bg: rgba(240, 67, 90, 0.1);
-  --warn: #c77700;
-  --warn-bg: rgba(245, 159, 0, 0.13);
-  --ring-track: rgba(20, 30, 70, 0.08);
-  --shadow: 0 10px 30px rgba(30, 41, 90, 0.1);
-  --shadow-lg: 0 24px 60px rgba(30, 41, 90, 0.16);
-  --glow1: rgba(91, 140, 255, 0.28);
-  --glow2: rgba(168, 85, 247, 0.18);
-  --glow3: rgba(255, 122, 89, 0.16);
-  --stars: 0;
+  --warn: #b7791f;
+  --warn-bg: rgba(245, 179, 51, 0.16);
+  --ring-track: rgba(76, 50, 160, 0.1);
+  --shadow: 0 10px 30px rgba(76, 50, 160, 0.12);
+  --shadow-lg: 0 24px 60px rgba(76, 50, 160, 0.18);
+  --glow1: rgba(167, 139, 250, 0.38);
+  --glow2: rgba(255, 150, 205, 0.32);
+  --glow3: rgba(255, 210, 120, 0.3);
+  --stars: 0.55;
+  --star-color: #b9a6ff;
+  --heading-glow: none;
+  --castle-wall-top: #d9ccff;
+  --castle-wall-bottom: #a58ff0;
+  --castle-roof-a: #ff9fd1;
+  --castle-roof-b: #b07cf0;
+  --castle-gold: #e8a720;
+  --castle-flag: #ff6fa8;
+  --castle-gate: #7a5fd6;
+  --castle-window: #fff3c4;
+  --ship-hull: #2b2f86;
+  --ship-stripe: #e8a720;
+  --ship-deck: #ffffff;
+  --ship-funnel: #e5484d;
+  --hero-sky: linear-gradient(160deg, #b9c8ff 0%, #d9c2ff 45%, #ffc8e6 100%);
+  --hero-text: #2a1f63;
   /* データ可視化: 単一色相（青）のシーケンシャル */
   --viz-0: rgba(20, 30, 70, 0.07);
   --viz-1: #9ec5f4;
@@ -43,7 +65,9 @@
   --m1: #86b6ef;
   --m2: #3987e5;
   --m3: #1c5cab;
-  --font: "Outfit", "Hiragino Maru Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", system-ui, sans-serif;
+  --font: "Fredoka", "Hiragino Maru Gothic ProN", "Zen Maru Gothic", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+  --font-display: "Fredoka", "Kiwi Maru", "Hiragino Maru Gothic ProN", "Zen Maru Gothic", sans-serif;
+  --font-script: "Great Vibes", "Snell Roundhand", cursive;
   --radius: 22px;
   --tabbar-h: 68px;
 }
@@ -51,29 +75,49 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --bg: #0a0f24;
-    --side-bg: rgba(10, 15, 36, 0.6);
-    --surface: rgba(255, 255, 255, 0.055);
-    --surface-solid: #151b3d;
+    --bg: #0d0b33;
+    --side-bg: rgba(14, 11, 52, 0.62);
+    --surface: rgba(255, 255, 255, 0.06);
+    --surface-solid: #1b1650;
     --surface-2: rgba(255, 255, 255, 0.06);
     --surface-3: rgba(255, 255, 255, 0.1);
-    --border: rgba(255, 255, 255, 0.09);
-    --text: #eef1ff;
-    --text-2: #c7cdee;
-    --muted: #8f98c2;
+    --border: rgba(255, 255, 255, 0.1);
+    --gold-line: rgba(255, 211, 110, 0.28);
+    --text: #f3efff;
+    --text-2: #d2cbf3;
+    --muted: #9d93cc;
+    --primary: #6b6cf6;
+    --primary-2: #c056e8;
+    --accent-text: #ffd36e;
     --ok: #3ddba8;
     --ok-bg: rgba(46, 211, 161, 0.14);
-    --ng: #ff6b81;
-    --ng-bg: rgba(255, 93, 115, 0.13);
-    --warn: #ffc24b;
-    --warn-bg: rgba(255, 194, 75, 0.13);
+    --ng: #ff7a92;
+    --ng-bg: rgba(255, 93, 115, 0.14);
+    --warn: #ffd36e;
+    --warn-bg: rgba(255, 211, 110, 0.14);
     --ring-track: rgba(255, 255, 255, 0.1);
-    --shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-    --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
-    --glow1: rgba(79, 107, 255, 0.3);
-    --glow2: rgba(168, 85, 247, 0.22);
-    --glow3: rgba(255, 122, 89, 0.12);
+    --shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
+    --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.55);
+    --glow1: rgba(98, 84, 240, 0.4);
+    --glow2: rgba(214, 70, 190, 0.26);
+    --glow3: rgba(255, 196, 92, 0.13);
     --stars: 1;
+    --star-color: #ffffff;
+    --heading-glow: 0 0 22px rgba(255, 211, 110, 0.28);
+    --castle-wall-top: #4b3aa8;
+    --castle-wall-bottom: #1d1660;
+    --castle-roof-a: #6f7cf7;
+    --castle-roof-b: #3a2a9a;
+    --castle-gold: #ffd36e;
+    --castle-flag: #ff8ad8;
+    --castle-gate: #120d3d;
+    --castle-window: #ffe39a;
+    --ship-hull: #10123f;
+    --ship-stripe: #ffd36e;
+    --ship-deck: #eef0ff;
+    --ship-funnel: #e5484d;
+    --hero-sky: linear-gradient(165deg, #1a1a6e 0%, #3a1f8f 50%, #7a2a8f 100%);
+    --hero-text: #ffffff;
     --viz-0: rgba(255, 255, 255, 0.07);
     --viz-1: #184f95;
     --viz-2: #256abf;
@@ -88,29 +132,49 @@
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0a0f24;
-  --side-bg: rgba(10, 15, 36, 0.6);
-  --surface: rgba(255, 255, 255, 0.055);
-  --surface-solid: #151b3d;
+  --bg: #0d0b33;
+  --side-bg: rgba(14, 11, 52, 0.62);
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-solid: #1b1650;
   --surface-2: rgba(255, 255, 255, 0.06);
   --surface-3: rgba(255, 255, 255, 0.1);
-  --border: rgba(255, 255, 255, 0.09);
-  --text: #eef1ff;
-  --text-2: #c7cdee;
-  --muted: #8f98c2;
+  --border: rgba(255, 255, 255, 0.1);
+  --gold-line: rgba(255, 211, 110, 0.28);
+  --text: #f3efff;
+  --text-2: #d2cbf3;
+  --muted: #9d93cc;
+  --primary: #6b6cf6;
+  --primary-2: #c056e8;
+  --accent-text: #ffd36e;
   --ok: #3ddba8;
   --ok-bg: rgba(46, 211, 161, 0.14);
-  --ng: #ff6b81;
-  --ng-bg: rgba(255, 93, 115, 0.13);
-  --warn: #ffc24b;
-  --warn-bg: rgba(255, 194, 75, 0.13);
+  --ng: #ff7a92;
+  --ng-bg: rgba(255, 93, 115, 0.14);
+  --warn: #ffd36e;
+  --warn-bg: rgba(255, 211, 110, 0.14);
   --ring-track: rgba(255, 255, 255, 0.1);
-  --shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
-  --glow1: rgba(79, 107, 255, 0.3);
-  --glow2: rgba(168, 85, 247, 0.22);
-  --glow3: rgba(255, 122, 89, 0.12);
+  --shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.55);
+  --glow1: rgba(98, 84, 240, 0.4);
+  --glow2: rgba(214, 70, 190, 0.26);
+  --glow3: rgba(255, 196, 92, 0.13);
   --stars: 1;
+  --star-color: #ffffff;
+  --heading-glow: 0 0 22px rgba(255, 211, 110, 0.28);
+  --castle-wall-top: #4b3aa8;
+  --castle-wall-bottom: #1d1660;
+  --castle-roof-a: #6f7cf7;
+  --castle-roof-b: #3a2a9a;
+  --castle-gold: #ffd36e;
+  --castle-flag: #ff8ad8;
+  --castle-gate: #120d3d;
+  --castle-window: #ffe39a;
+  --ship-hull: #10123f;
+  --ship-stripe: #ffd36e;
+  --ship-deck: #eef0ff;
+  --ship-funnel: #e5484d;
+  --hero-sky: linear-gradient(165deg, #1a1a6e 0%, #3a1f8f 50%, #7a2a8f 100%);
+  --hero-text: #ffffff;
   --viz-0: rgba(255, 255, 255, 0.07);
   --viz-1: #184f95;
   --viz-2: #256abf;
@@ -1245,3 +1309,117 @@ html { overflow-x: clip; }
 .gen-list { display: flex; flex-direction: column; gap: 6px; max-height: 46vh; overflow: auto; }
 .gen-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--border); cursor: pointer; }
 .gen-row input { width: 20px; height: 20px; accent-color: var(--primary); flex-shrink: 0; }
+
+/* =========================================================
+   魔法のテーマ（おとぎ話風の装飾・上書き）
+   ========================================================= */
+body::after { display: none; }
+h1, h2, h3, .brand b, .bp-city b, .results-hero h2, .celebrate-title, .section-head h2, .mc-text b, .st-name, .rp-body b, .sp-title b { font-family: var(--font-display); }
+h1, .results-hero h2 { text-shadow: var(--heading-glow); }
+
+/* 星空 */
+.sky { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; opacity: var(--stars); }
+.sky i { position: absolute; border-radius: 50%; background: var(--star-color); box-shadow: 0 0 6px var(--star-color); animation: twinkle 4s ease-in-out infinite; }
+.sky b { position: absolute; color: var(--castle-gold); animation: twinkle 5s ease-in-out infinite; filter: drop-shadow(0 0 6px var(--castle-gold)); }
+.sky .sparkle { display: block; }
+@keyframes twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.7); } 50% { opacity: 1; transform: scale(1); } }
+.shooting { position: absolute; width: 130px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, rgba(255, 255, 255, 0), var(--star-color)); opacity: 0; transform: rotate(-20deg); }
+.shooting.s1 { top: 12%; left: 62%; animation: shoot 11s ease-in 3s infinite; }
+.shooting.s2 { top: 34%; left: 88%; animation: shoot 17s ease-in 9s infinite; }
+@keyframes shoot { 0% { opacity: 0; transform: translate(0, 0) rotate(-20deg); } 2% { opacity: 1; } 8% { opacity: 0; transform: translate(-420px, 150px) rotate(-20deg); } 100% { opacity: 0; transform: translate(-420px, 150px) rotate(-20deg); } }
+
+/* スプラッシュ */
+#splash { background: radial-gradient(900px 600px at 50% 35%, #3a1f8f, #0d0b33 72%); }
+#splash .sp-stars { position: absolute; inset: 0; animation: twinkle 3s ease-in-out infinite;
+  background-image: radial-gradient(1.5px 1.5px at 15% 20%, #fff, transparent), radial-gradient(1px 1px at 80% 15%, #fff, transparent), radial-gradient(2px 2px at 65% 70%, #ffe39a, transparent), radial-gradient(1px 1px at 30% 80%, #fff, transparent), radial-gradient(1.5px 1.5px at 90% 55%, #fff, transparent), radial-gradient(1px 1px at 45% 40%, #ffe39a, transparent); }
+#splash .sp-inner { position: relative; text-align: center; }
+#splash .sp-name { font-family: var(--font-script); font-size: 58px; font-weight: 400; letter-spacing: 0; color: #ffe39a; text-shadow: 0 0 24px rgba(255, 211, 110, 0.65); margin-top: 10px; }
+#splash .sp-sub { color: #d2cbf3; font: 500 12px var(--font); letter-spacing: 0.22em; }
+
+/* ブランド・プロフィール */
+.brand b::after { content: " ✦"; color: var(--castle-gold); font-size: 14px; vertical-align: 4px; }
+.card, .mode-card, .qm, .side-profile { border-color: var(--gold-line); }
+.side-link.active { background: linear-gradient(135deg, var(--primary), var(--primary-2)); box-shadow: 0 8px 22px rgba(107, 108, 246, 0.4), inset 0 0 0 1px rgba(255, 227, 154, 0.35); }
+.tab-link.active { background: linear-gradient(135deg, var(--primary), var(--primary-2)); box-shadow: inset 0 0 0 1px rgba(255, 227, 154, 0.35); }
+
+/* ボタン：金色のシマー */
+.btn { border-radius: 999px; }
+.btn-accent { position: relative; overflow: hidden; color: var(--on-gold); background: linear-gradient(135deg, var(--gold-a), var(--gold-b)); box-shadow: 0 8px 24px rgba(242, 169, 34, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.6); }
+.btn-accent::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.7), transparent); transform: skewX(-20deg); animation: shimmer 3.8s ease-in-out infinite; pointer-events: none; }
+@keyframes shimmer { 0%, 62% { left: -60%; } 100% { left: 130%; } }
+.btn-accent .pill { background: rgba(61, 38, 0, 0.14); }
+.btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-2)); box-shadow: 0 8px 22px rgba(107, 108, 246, 0.4); }
+.btn-ai { background: linear-gradient(135deg, #7c3aed, #e0479e); }
+.lv-badge, .lv-mini, .chip.new { color: var(--on-gold); background: linear-gradient(135deg, var(--gold-a), var(--gold-b)); }
+.combo, .float-text, .streak-on, .hb.flame { color: var(--accent-text) !important; }
+.bar-xp > i { background: linear-gradient(90deg, var(--gold-a), var(--gold-b)); }
+
+/* ホームのヒーロー（夜空・花火・お城・クルーズ船） */
+.magic-hero { position: relative; isolation: isolate; overflow: hidden; min-height: 216px; margin-bottom: 18px; padding: 24px 28px 46px; border-radius: 30px; color: var(--hero-text); background: var(--hero-sky); border: 1px solid var(--gold-line); box-shadow: var(--shadow-lg); }
+.magic-hero::before { content: ""; position: absolute; inset: 0; z-index: -2; opacity: 0.9;
+  background-image: radial-gradient(1.5px 1.5px at 8% 18%, #fff, transparent), radial-gradient(1px 1px at 22% 62%, #fff, transparent), radial-gradient(1.4px 1.4px at 38% 12%, #fff, transparent), radial-gradient(1px 1px at 52% 40%, #fff, transparent), radial-gradient(1.8px 1.8px at 64% 18%, #ffe39a, transparent), radial-gradient(1px 1px at 78% 8%, #fff, transparent), radial-gradient(1.2px 1.2px at 92% 30%, #fff, transparent), radial-gradient(1px 1px at 30% 85%, #fff, transparent); }
+.magic-hero .fireworks { position: absolute; z-index: -1; top: -4px; right: 2%; width: min(56%, 440px); }
+.magic-hero .castle { position: absolute; z-index: -1; right: 4%; bottom: 22px; width: min(34%, 290px); filter: drop-shadow(0 0 22px rgba(255, 211, 110, 0.28)); }
+.mh-sea { position: absolute; z-index: -1; left: 0; right: 0; bottom: 0; height: 40px; background: linear-gradient(180deg, rgba(120, 160, 255, 0.35), rgba(40, 30, 120, 0.55)); }
+.mh-sea::before { content: ""; position: absolute; left: 0; right: 0; top: -8px; height: 16px; background: radial-gradient(14px 8px at 14px 8px, rgba(120, 160, 255, 0.35) 98%, transparent) 0 0 / 28px 16px repeat-x; animation: waves 6s linear infinite; }
+@keyframes waves { to { background-position: 28px 0; } }
+.mh-ship { position: absolute; z-index: -1; bottom: 16px; width: 120px; animation: sail 34s linear infinite; }
+.mh-ship .ship { display: block; animation: bob 2.6s ease-in-out infinite; }
+@keyframes sail { from { left: -140px; } to { left: 104%; } }
+@keyframes bob { 50% { transform: translateY(-3px) rotate(-1deg); } }
+.mh-text { position: relative; max-width: 60%; }
+.mh-greet { margin: 0; font-weight: 600; opacity: 0.9; }
+.mh-script { font-family: var(--font-script); font-size: 46px; line-height: 1.05; margin: 2px 0 2px; color: #ffe39a; text-shadow: 0 0 18px rgba(255, 211, 110, 0.6); }
+:root:not([data-theme="dark"]) .mh-script { color: #c2730c; text-shadow: 0 0 14px rgba(255, 255, 255, 0.9); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .mh-script { color: #ffe39a; text-shadow: 0 0 18px rgba(255, 211, 110, 0.6); } }
+.magic-hero h1 { font-size: clamp(21px, 2.8vw, 30px); }
+.magic-hero .head-badges { margin-top: 14px; flex-wrap: wrap; }
+.magic-hero .hb { background: rgba(255, 255, 255, 0.16); border-color: rgba(255, 255, 255, 0.28); color: var(--hero-text); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.magic-hero .hb b { color: var(--hero-text); }
+.magic-hero .head-settings { background: rgba(255, 255, 255, 0.16); color: var(--hero-text); }
+.cw { fill: var(--castle-window); animation: windowGlow 3.5s ease-in-out infinite alternate; }
+@keyframes windowGlow { from { opacity: 0.65; } to { opacity: 1; filter: drop-shadow(0 0 3px var(--castle-window)); } }
+.fw { opacity: 0; animation: burst 3.8s ease-out infinite; animation-delay: var(--d); }
+@keyframes burst { 0% { transform: scale(0.2); opacity: 0; } 8% { opacity: 1; } 45% { transform: scale(1); opacity: 0.95; } 72% { transform: scale(1.06); opacity: 0; } 100% { opacity: 0; } }
+
+/* 搭乗券 → 魔法の航海チケット */
+.boarding { background:
+    radial-gradient(1.4px 1.4px at 12% 22%, rgba(255, 255, 255, 0.9), transparent), radial-gradient(1px 1px at 34% 70%, rgba(255, 255, 255, 0.8), transparent), radial-gradient(1.6px 1.6px at 58% 18%, #ffe39a, transparent), radial-gradient(1px 1px at 72% 80%, rgba(255, 255, 255, 0.8), transparent),
+    linear-gradient(130deg, #1f2a8a 0%, #4b2aa6 48%, #b33a9e 100%);
+  box-shadow: 0 22px 50px rgba(75, 42, 166, 0.38), inset 0 0 0 1.5px rgba(255, 211, 110, 0.55); }
+.bp-top { color: #ffe39a; }
+.bp-main::after { content: "✦"; color: #ffe39a; font-size: 220px; opacity: 0.09; right: 0; bottom: -70px; transform: rotate(12deg); }
+.bp-stub > small { color: #ffe39a; }
+.trip-banner { background: linear-gradient(120deg, #5b4ff0, #9b4de0 55%, #ff6fa8); box-shadow: 0 12px 30px rgba(155, 77, 224, 0.32); }
+.profile-card { background: radial-gradient(1.5px 1.5px at 14% 30%, #fff, transparent), radial-gradient(1px 1px at 60% 20%, #ffe39a, transparent), linear-gradient(130deg, #1f2a8a, #4b2aa6 48%, #b33a9e); box-shadow: 0 20px 50px rgba(75, 42, 166, 0.32), inset 0 0 0 1.5px rgba(255, 211, 110, 0.45); }
+
+/* デスティネーション（シーン）にきらきら */
+.scene-tile::before { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(1.6px 1.6px at 16% 20%, rgba(255, 255, 255, 0.95), transparent), radial-gradient(1px 1px at 64% 30%, rgba(255, 255, 255, 0.85), transparent), radial-gradient(1.3px 1.3px at 40% 66%, rgba(255, 255, 255, 0.7), transparent), radial-gradient(1px 1px at 84% 74%, rgba(255, 255, 255, 0.8), transparent); }
+.scene-tile:hover .st-emoji, .qm:hover .ico { transform: translateY(-3px) rotate(-4deg); }
+.st-emoji, .qm .ico { transition: transform 0.25s; }
+
+/* お祝い */
+.modal.celebrate { color: #fff; background: radial-gradient(1.5px 1.5px at 12% 20%, #fff, transparent), radial-gradient(1px 1px at 82% 16%, #fff, transparent), radial-gradient(1.6px 1.6px at 70% 80%, #ffe39a, transparent), linear-gradient(165deg, #1a1a6e 0%, #3a1f8f 50%, #7a2a8f 100%); border: 1.5px solid rgba(255, 211, 110, 0.5); }
+.modal.celebrate .muted { color: rgba(255, 255, 255, 0.75); }
+.modal.celebrate .modal-actions { background: transparent; }
+.celebrate-kicker { font-family: var(--font-script); font-size: 40px; font-weight: 400; letter-spacing: 0; color: #ffe39a; -webkit-text-fill-color: #ffe39a; background: none; text-shadow: 0 0 18px rgba(255, 211, 110, 0.6); }
+.celebrate-level { background: linear-gradient(135deg, #fff3c4, #ffd36e 45%, #ff8ad8); -webkit-background-clip: text; background-clip: text; }
+
+/* 結果・チャット */
+.results-emoji { filter: drop-shadow(0 0 16px rgba(255, 211, 110, 0.45)); }
+.bubble.me .b-body { background: linear-gradient(135deg, var(--primary), var(--primary-2)); }
+
+@media (max-width: 680px) {
+  .magic-hero { padding: 20px 18px 50px; min-height: 230px; }
+  .mh-text { max-width: 100%; }
+  .magic-hero .castle { width: 46%; opacity: 0.55; right: -2%; }
+  .magic-hero .fireworks { width: 80%; opacity: 0.7; }
+  .mh-script { font-size: 38px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sky i, .sky b, .shooting, .fw, .mh-ship, .btn-accent::after { animation: none !important; }
+  .fw { opacity: 0.8; }
+  .mh-ship { left: 8%; }
+}
+.bp-icon .ico.no-rot { transform: none; }

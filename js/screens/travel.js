@@ -20,6 +20,15 @@ const EMERGENCY = [
   ['I don\'t speak English well. Please speak slowly.', '英語があまり話せません。ゆっくり話してください。'],
 ];
 
+// マイカードのひな形（クルーズ・旅行でよく見せるもの）
+const MEMO_TEMPLATES = [
+  { label: '🛳️ 客室番号', title: '客室番号', text: 'Our stateroom is 8042 on deck 8.' },
+  { label: '⏰ 帰船時刻', title: '帰船時刻（寄港地）', text: 'Our ship: ____\nAll aboard time: 4:30 p.m.\nPier: ____' },
+  { label: '🚨 避難集合場所', title: '避難集合場所', text: 'Our muster station is ____ on deck ____.' },
+  { label: '🥜 アレルギー', title: 'アレルギー', text: 'I am allergic to ____.\nPlease make sure my food does not contain ____.' },
+  { label: '🏨 ホテルの住所', title: 'ホテルの住所', text: 'Please take me to this hotel:\n____ Hotel\n(address)' },
+];
+
 export function showMode(en, ja = '') {
   stopSpeaking();
   const len = en.length;
@@ -90,7 +99,8 @@ export default {
 
         <section>
           <div class="section-head"><h2>🪪 マイカード</h2><button class="btn btn-sm btn-soft add-memo">${icon('plus', 16)} 追加</button></div>
-          <p class="small muted">ホテルの住所・アレルギー・予約番号などを登録して、タクシーやお店で見せられます。</p>
+          <p class="small muted">ホテルの住所・アレルギー・予約番号などを登録して、タクシーやお店で見せられます。クルーズ用のひな形もあります。</p>
+          <div class="chips wrap memo-tpl">${MEMO_TEMPLATES.map((t, i) => `<button class="chip sm" data-tpl="${i}">＋ ${t.label}</button>`).join('')}</div>
           <div class="memo-grid"></div>
         </section>
 
@@ -190,8 +200,8 @@ export default {
       },
     });
 
-    async function editMemo(i) {
-      const m = i != null ? state.memos[i] : { title: '', text: '' };
+    async function editMemo(i, tpl = null) {
+      const m = i != null ? state.memos[i] : tpl || { title: '', text: '' };
       const r = await modal({
         title: i != null ? 'マイカードを編集' : 'マイカードを追加',
         body: `<label class="field"><span>タイトル</span><input class="input m-t" value="${esc(m.title)}" placeholder="例: ホテルの住所"></label>
@@ -223,6 +233,8 @@ export default {
       const fav = t.closest('[data-fav]');
       if (fav) { const id = fav.dataset.fav; if (state.favs[id]) delete state.favs[id]; else state.favs[id] = 1; save('favs'); fav.classList.toggle('on', !!state.favs[id]); sfx.play('pop'); return; }
       if (t.closest('.add-memo')) { editMemo(null); return; }
+      const tp = t.closest('[data-tpl]');
+      if (tp) { const x = MEMO_TEMPLATES[+tp.dataset.tpl]; editMemo(null, { title: x.title, text: x.text }); return; }
       if (t.closest('.gen')) { openPhraseGenerator({ onAdded: () => go(`#/travel?scene=custom&r=${Date.now()}`) }); return; }
       const sm = t.closest('.show-memo');
       if (sm) { const m = state.memos[+sm.dataset.i]; showMode(m.text, m.title); return; }

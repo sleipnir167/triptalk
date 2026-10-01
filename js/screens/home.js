@@ -8,6 +8,7 @@ import { go } from '../router.js';
 import { TIPS } from '../data/scenes.js';
 import { DIALOGUES } from '../data/dialogues.js';
 import { masteryDot, sayBtn, openItem } from '../components.js';
+import { castleSVG, shipSVG, fireworksSVG } from '../deco.js';
 
 function greeting() {
   const h = new Date().getHours();
@@ -74,24 +75,30 @@ export default {
     const tip = TIPS[(new Date().getDate() + new Date().getMonth() * 3) % TIPS.length];
     const weak = allItems().filter((it) => isWeak(it)).slice(0, 6);
     const flight = 'TT' + todayKey().replace(/-/g, '').slice(2);
+    const cruise = /クルーズ|cruise|船/i.test(state.settings.trip?.name || '');
 
     el.innerHTML = `
     <div class="wrap home">
-      <header class="home-head">
-        <div>
-          <p class="muted">${gEmoji} ${greet}</p>
-          <h1>今日も旅の英語を<br class="sm-only">磨きましょう</h1>
-        </div>
-        <div class="head-badges">
-          <div class="hb ${st ? 'flame' : ''}" title="連続学習日数">${icon('flame', 18)}<b>${st}</b><small>日連続</small></div>
-          <div class="hb" title="レベル"><span class="lv-mini">Lv.${L.level}</span><small>${esc(L.title)}</small></div>
-          <a class="btn-icon soft head-settings" href="#/settings" aria-label="設定">${icon('settings', 20)}</a>
+      <header class="magic-hero">
+        ${fireworksSVG()}
+        ${castleSVG()}
+        <div class="mh-sea"></div>
+        <div class="mh-ship">${shipSVG()}</div>
+        <div class="mh-text">
+          <p class="mh-greet">${gEmoji} ${greet}</p>
+          <div class="mh-script">${cruise ? 'Bon Voyage!' : 'Have a magical trip!'}</div>
+          <h1>夢の旅へ、英語の魔法を<br class="sm-only">かけよう</h1>
+          <div class="head-badges">
+            <div class="hb ${st ? 'flame' : ''}" title="連続学習日数">${icon('flame', 18)}<b>${st}</b><small>日連続</small></div>
+            <div class="hb" title="レベル"><span class="lv-mini">Lv.${L.level}</span><small>${esc(L.title)}</small></div>
+            <a class="btn-icon soft head-settings" href="#/settings" aria-label="設定">${icon('settings', 20)}</a>
+          </div>
         </div>
       </header>
 
       ${trip ? `
       <div class="trip-banner ${trip.days < 0 ? 'past' : ''}">
-        <div class="trip-plane">✈️</div>
+        <div class="trip-plane">${cruise ? '🚢' : '✈️'}</div>
         <div class="trip-text">
           ${trip.days > 0 ? `<b>${esc(trip.name)}まで あと <span class="trip-days">${trip.days}</span> 日</b><small>${trip.unlearned ? `出発までに全範囲を終えるには 1日 <b>${trip.perDay}</b> 項目のペースがおすすめ` : '全項目を学習済み！復習で記憶を定着させましょう'}</small>`
             : trip.days === 0 ? `<b>今日は ${esc(trip.name)} の出発日！🎉</b><small>旅行モードで現地フレーズをすぐ使えます</small>`
@@ -107,10 +114,10 @@ export default {
 
       <section class="boarding">
         <div class="bp-main">
-          <div class="bp-top"><span>✈ TRIPTALK AIR</span><span>FLIGHT ${flight}</span></div>
+          <div class="bp-top"><span>✦ TRIPTALK MAGIC VOYAGE</span><span>${cruise ? 'VOYAGE' : 'FLIGHT'} ${flight}</span></div>
           <div class="bp-route">
             <div class="bp-city"><small>FROM</small><b>JPN</b><span>いまの自分</span></div>
-            <div class="bp-path"><span class="bp-dash"></span><span class="bp-icon">${icon('plane', 22)}</span><span class="bp-dash"></span></div>
+            <div class="bp-path"><span class="bp-dash"></span><span class="bp-icon">${icon(cruise ? 'ship' : 'plane', 22, cruise ? 'no-rot' : '')}</span><span class="bp-dash"></span></div>
             <div class="bp-city right"><small>TO</small><b>ENG</b><span>話せる自分</span></div>
           </div>
           <div class="bp-info">
@@ -139,7 +146,7 @@ export default {
         <a class="qm tap" href="#/aichat" style="--g1:#6366f1;--g2:#a855f7">${icon('bot', 26)}<b>AI会話</b><small>ミッションに挑戦</small></a>
       </section>
 
-      <div class="section-head"><h2>🌍 デスティネーション</h2><a class="link" href="#/library">すべて見る ${icon('chevR', 16)}</a></div>
+      <div class="section-head"><h2>✨ デスティネーション</h2><a class="link" href="#/library">すべて見る ${icon('chevR', 16)}</a></div>
       <section class="scene-grid">
         ${scenes().map((sc) => {
           const s = sceneStats(sc.id);
