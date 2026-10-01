@@ -1,0 +1,11 @@
+{
+  "name": "triptalk",
+  "private": true,
+  "type": "module",
+  "description": "旅行英語の総合学習PWA（SRS単語帳・発音判定・ロールプレイ・AI会話・AI添削）",
+  "scripts": {
+    "start": "python3 -m http.server 8765",
+    "check": "node scripts/check-data.mjs",
+    "build-sw": "node scripts/build-sw.mjs"
+  }
+}

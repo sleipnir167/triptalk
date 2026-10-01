@@ -1,0 +1,27 @@
+# TripTalk：AI 中継（Cloudflare Worker）の設定
+# ※ いまのアプリは「英検3級パスポート」の中継サーバー（eiken3-ai）を共用しています（js/config.js）。
+#    TripTalk 専用にしたいときだけ、これを deploy して js/config.js の baseUrl を書き換えてください。
+# 公開：  npx wrangler@latest deploy
+# キー登録：npx wrangler@latest secret put MODELLIX_API_KEY --name triptalk-ai
+name = "triptalk-ai"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+# 受け付けるサイト（公開先と、手元の確認用）
+ALLOWED_ORIGINS = "https://sleipnir167.github.io,http://localhost:8765"
+# 使ってよいモデル（先頭から順に試す。無料モデルを先に）
+ALLOWED_MODELS = "modellix-ai/free-llm"
+# 1回の出力トークンの上限（推論する無料モデルは考える工程にもトークンを使うので多めに）
+MAX_TOKENS = "4000"
+# 失敗・中身のない返答のとき、同じモデルでやり直す回数
+RETRIES = "1"
+
+# IP ごとに 1 分あたり 12 回まで（使いすぎ・悪用の防止）
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "3002"
+
+  [ratelimits.simple]
+  limit = 12
+  period = 60
