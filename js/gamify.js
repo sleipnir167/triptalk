@@ -3,9 +3,11 @@ import { state, save } from './store.js';
 import { bus } from './bus.js';
 import { todayKey, modal, toast, esc } from './ui.js';
 import { sfx } from './sfx.js';
-import { confetti, floatText, fireworks } from './fx.js';
+import { confetti, floatText, fireworks, balloons } from './fx.js';
 import { review } from './srs.js';
-import { scenes, sceneItems } from './content.js';
+import { scenes, sceneItems, allItems, hash } from './content.js';
+import { aiReady } from './ai.js';
+import { mascot } from './mascot.js';
 
 export const TITLES = [
   [1, '旅の準備中', '🧳'], [3, 'はじめての海外', '🎫'], [5, 'ツーリスト', '📸'], [8, 'バックパッカー', '🎒'],
@@ -76,6 +78,68 @@ export function addStudyTime(sec) {
   // 開いたまま放置した時間を数えすぎないよう、1回あたり30分まで
   dayRec().t += Math.round(Math.min(sec, 1800));
   save('stats');
+  checkQuests();
+}
+
+/** 今日の回数（クエスト用）: blitz / rp / chat / write */
+export function dayBump(key) {
+  const d = dayRec();
+  d[key] = (d[key] || 0) + 1;
+  save('stats');
+  checkQuests();
+}
+
+// ---- 今日のマジカル・クエスト（スタンプラリー） ----
+export const QUESTS = [
+  { id: 'answers', icon: '📝', label: '20問に答える', target: 20, val: (d) => d.n },
+  { id: 'correct', icon: '⭕', label: '15問正解する', target: 15, val: (d) => d.ok },
+  { id: 'speak', icon: '🎤', label: '発音チェックに5回合格', target: 5, val: (d) => d.spOk },
+  { id: 'newc', icon: '✨', label: '新しく5個覚える', target: 5, val: (d) => d.newc },
+  { id: 'blitz', icon: '⚡', label: 'スピード周回を1回', target: 1, val: (d) => d.blitz || 0 },
+  { id: 'rp', icon: '🎭', label: '台本ロールプレイを1つクリア', target: 1, val: (d) => d.rp || 0 },
+  { id: 'time', icon: '⏰', label: '10分学習する', target: 600, val: (d) => d.t, fmt: (v) => `${Math.floor(v / 60)}分` },
+  { id: 'chat', icon: '🤖', label: 'AI会話を1回', target: 1, val: (d) => d.chat || 0, ai: true },
+];
+export const QUEST_XP = 20;
+export const QUEST_BONUS = 50;
+
+/** 日付ごとに決まる3つのクエスト */
+export function todayQuests() {
+  const pool = QUESTS.filter((q) => !q.ai || aiReady('chat'));
+  let seed = parseInt(hash('quest:' + todayKey()), 36);
+  const picked = [];
+  while (picked.length < 3 && picked.length < pool.length) {
+    seed = (seed * 1103515245 + 12345) % 2147483648;
+    const q = pool[seed % pool.length];
+    if (!picked.includes(q)) picked.push(q);
+  }
+  const d = dayRec();
+  return picked.map((q) => ({ ...q, v: Math.min(q.target, q.val(d) || 0), done: !!d.qd?.[q.id] }));
+}
+
+let checking = false;
+export function checkQuests() {
+  if (checking) return;
+  checking = true;
+  try {
+    const d = dayRec();
+    d.qd ||= {};
+    const qs = todayQuests();
+    for (const q of qs) {
+      if (d.qd[q.id] || q.val(d) < q.target) continue;
+      d.qd[q.id] = Date.now();
+      save('stats');
+      sfx.play('goal');
+      toast(`クエスト達成：${q.label}（+${QUEST_XP} XP）`, { emoji: '🎟️', type: 'success', ms: 3200 });
+      addXP(QUEST_XP);
+    }
+    if (!d.qall && qs.every((q) => d.qd[q.id])) {
+      d.qall = Date.now();
+      bump('questDays');
+      addXP(QUEST_BONUS);
+      setTimeout(() => { fireworks({ bursts: 3 }); toast(`今日のクエストをすべてクリア！ボーナス +${QUEST_BONUS} XP`, { emoji: '🏰', type: 'success', ms: 4000 }); }, 900);
+    }
+  } finally { checking = false; }
 }
 
 /** 回答を記録（SRS更新 + 統計 + XP） */
@@ -91,15 +155,18 @@ export function recordAnswer(item, { ok, grade, xp = 0, anchor, speak = false } 
   if (ok) bump('correct');
   save('stats');
   addXP(xp, anchor);
+  checkQuests();
 }
 
 async function celebrateLevel(info) {
   sfx.play('levelup');
   fireworks({ bursts: 5 });
+  balloons(7);
   confetti({ count: 90 });
   await modal({
     cls: 'celebrate',
     body: `<div class="celebrate-box">
+      <div class="celebrate-mascot">${mascot('cheer')}</div>
       <div class="celebrate-kicker">Level Up!</div>
       <div class="celebrate-level"><span>Lv.</span>${info.level}</div>
       <div class="celebrate-title">${info.emoji} ${esc(info.title)}</div>
@@ -127,7 +194,7 @@ export function badgeDefs() {
     { id: 'streak30', emoji: '🏆', name: 'Long Stay', desc: '30日連続で学習', color: '#eab308', test: () => streak() >= 30 },
     { id: 'seen50', emoji: '📗', name: '50 Words', desc: '50項目を学習', color: '#10b981', test: () => seenCount() >= 50 },
     { id: 'seen200', emoji: '📚', name: '200 Words', desc: '200項目を学習', color: '#0ea5e9', test: () => seenCount() >= 200 },
-    { id: 'seenAll', emoji: '🎓', name: 'Completed', desc: 'すべての項目を学習', color: '#a855f7', test: () => seenCount() >= 450 },
+    { id: 'seenAll', emoji: '🎓', name: 'Completed', desc: 'すべての項目を学習', color: '#a855f7', test: () => seenCount() >= allItems().filter((it) => it.scene !== 'custom').length },
     { id: 'speak20', emoji: '🎤', name: 'First Words', desc: 'スピーキング合格 20回', color: '#ec4899', test: () => C('speakPass') >= 20 },
     { id: 'speak100', emoji: '🗣️', name: 'Speaker', desc: 'スピーキング合格 100回', color: '#8b5cf6', test: () => C('speakPass') >= 100 },
     { id: 'blitz', emoji: '⚡', name: 'Speed Runner', desc: 'スピード周回で30枚以上', color: '#f59e0b', test: () => (state.stats.best.blitzCards || 0) >= 30 },
@@ -140,6 +207,7 @@ export function badgeDefs() {
     { id: 'goal10', emoji: '🎯', name: 'On Target', desc: '1日の目標を10回達成', color: '#fb7185', test: () => C('goals') >= 10 },
     { id: 'night', emoji: '🌙', name: 'Red-eye', desc: '23時以降に学習', color: '#64748b', test: () => C('night') >= 1 },
     { id: 'early', emoji: '🌅', name: 'Early Bird', desc: '朝6時台までに学習', color: '#f97316', test: () => C('early') >= 1 },
+    { id: 'quest5', emoji: '🎟️', name: 'Quest Hero', desc: '今日のクエストを5日クリア', color: '#eab308', test: () => C('questDays') >= 5 },
   ];
   for (const sc of scenes({ withCustom: false })) {
     list.push({ id: 'scene-' + sc.id, emoji: sc.emoji, name: sc.en.toUpperCase(), desc: `「${sc.name}」の80%を定着`, color: sc.grad[0], scene: true, test: () => sceneMastered(sc.id) });
@@ -166,15 +234,13 @@ export function checkBadges() {
   }
 }
 
+/** コレクションピン（エナメルピン風） */
 export function stampHTML(b, earned, i = 0) {
-  const rot = ((i * 37) % 17) - 8;
-  return `<div class="stamp ${earned ? '' : 'locked'}" style="--c:${earned ? b.color : 'var(--muted)'};--r:${rot}deg" title="${esc(b.desc)}">
-    <div class="stamp-inner">
-      <small>${earned ? 'TRIPTALK' : 'LOCKED'}</small>
-      <span class="stamp-emoji">${earned ? b.emoji : '？'}</span>
-      <b>${esc(b.name)}</b>
-      ${earned ? `<small>${new Date(earned).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })}</small>` : ''}
-    </div>
+  const rot = ((i * 37) % 13) - 6;
+  return `<div class="pin ${earned ? '' : 'locked'}" style="--c:${earned ? b.color : '#8b88a8'};--r:${rot}deg" title="${esc(b.desc)}">
+    <div class="pin-rim"><div class="pin-face"><span class="pin-emoji">${earned ? b.emoji : '？'}</span></div></div>
+    <div class="pin-name">${esc(b.name)}</div>
+    ${earned ? `<small class="pin-date">${new Date(earned).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' })}</small>` : '<small class="pin-date">ひみつ</small>'}
   </div>`;
 }
 
@@ -185,10 +251,10 @@ async function celebrateBadge(b) {
   await modal({
     cls: 'celebrate',
     body: `<div class="celebrate-box">
-      <div class="celebrate-kicker">New Stamp!</div>
+      <div class="celebrate-kicker">New Pin!</div>
       <div class="stamp-drop">${stampHTML(b, Date.now())}</div>
       <div class="celebrate-title">${esc(b.desc)}</div>
-      <p class="muted">パスポートにスタンプが押されました</p>
+      <p class="muted">ピンコレクションに新しいピンが加わりました</p>
     </div>`,
     actions: [{ label: 'OK', cls: 'btn-primary btn-block', value: true }],
   });

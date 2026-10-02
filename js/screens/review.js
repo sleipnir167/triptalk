@@ -27,7 +27,7 @@ export default {
       const next = nextDueTime();
       const unlearned = pool({ scene: 'new' }).length;
       el.innerHTML = `<div class="wrap narrow">${emptyState({
-        emoji: '🎉', title: '今日の復習はすべて完了！',
+        mood: 'cheer', title: '今日の復習はすべて完了！',
         text: next < Infinity ? `次の復習は約 ${fmtSpan(next - Date.now())} 後です。` : 'まずは新しいフレーズを覚えましょう。',
         actions: `${unlearned ? `<a class="btn btn-primary btn-lg" href="#/learn">${icon('sparkles', 18)} 新しく覚える</a>` : ''}<a class="btn btn-soft btn-lg" href="#/blitz">${icon('zap', 18)} スピード周回</a><a class="btn btn-ghost btn-lg" href="#/home">ホームへ</a>`,
       })}</div>`;

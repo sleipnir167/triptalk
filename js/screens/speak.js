@@ -31,7 +31,7 @@ export default {
       items = pickWeighted(pool({ scene: params.scene || 'all', kind }), +(params.count || 10));
     }
     if (!items.length) {
-      el.innerHTML = `<div class="wrap narrow">${emptyState({ emoji: '🔍', title: '出題できる項目がありません', text: `「${scopeLabel(params.scene)}」に該当する項目が見つかりませんでした。`, actions: `<a class="btn btn-primary" href="#/study">学習メニューへ</a>` })}</div>`;
+      el.innerHTML = `<div class="wrap narrow">${emptyState({ mood: 'think', title: '出題できる項目がありません', text: `「${scopeLabel(params.scene)}」に該当する項目が見つかりませんでした。`, actions: `<a class="btn btn-primary" href="#/study">学習メニューへ</a>` })}</div>`;
       return;
     }
     const pass = state.settings.passScore;

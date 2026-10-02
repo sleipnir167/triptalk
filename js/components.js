@@ -4,7 +4,8 @@ import { icon } from './icons.js';
 import { state, save } from './store.js';
 import { speak, stopSpeaking, listen, sttEngine } from './speech.js';
 import { sfx } from './sfx.js';
-import { confetti, fireworks } from './fx.js';
+import { confetti, fireworks, balloons } from './fx.js';
+import { mascot } from './mascot.js';
 import { getCard, retrievability, mastery, MASTERY_LABEL, resetCard, DAY, intervalDays } from './srs.js';
 import { sceneById, scenes, allItems, hash, reindex, getItem } from './content.js';
 import { aiReady, explainItem, askFollowup, aiWaitHint, generatePhrases } from './ai.js';
@@ -221,7 +222,7 @@ export async function loadExplain(item, box, { auto = false } = {}) {
     return;
   }
   const run = async () => {
-    box.innerHTML = `<div class="ai-loading"><span class="dots"><i></i><i></i><i></i></span> AIが解説を作成中…${aiWaitHint('explain')}</div>`;
+    box.innerHTML = `<div class="ai-loading"><span class="lumi-mini">${mascot('think')}</span> ルミが解説を準備中…${aiWaitHint('explain')}</div>`;
     try {
       const r = await explainItem(item);
       box.innerHTML = body(r) + `<div class="ai-meta">${icon('bot', 14)} ${esc(r.provider)}${r.cached ? '（保存済み）' : '・次回からは保存済みの解説を無料で表示'}</div>`;
@@ -428,12 +429,12 @@ export function showResults(host, { title = 'おつかれさま！', emoji = '�
   const pct = score ?? (total ? correct / total : 0);
   if (timeSec) addStudyTime(timeSec);
   if (total >= 5 && correct === total) bump('perfect');
-  const msg = pct >= 0.95 ? '完璧なフライトでした！' : pct >= 0.8 ? 'すばらしい！順調に上達しています' : pct >= 0.6 ? 'いい調子！間違えた所を復習しよう' : '間違いは成長のチャンス。もう一度挑戦！';
+  const msg = pct >= 0.95 ? '完璧！ルミもびっくりの魔法だね✨' : pct >= 0.8 ? 'すばらしい！どんどん魔法が上達しているよ' : pct >= 0.6 ? 'いい調子！間違えたところに、もう一度魔法をかけよう' : 'だいじょうぶ、間違いは成長の魔法。もう一度いこう！';
   const sorted = [...items].sort((a, b) => (a.ok === b.ok ? 0 : a.ok ? 1 : -1));
   host.innerHTML = `
     <div class="results">
       <div class="results-hero">
-        <div class="results-emoji">${emoji}</div>
+        <div class="results-mascot">${mascot(pct >= 0.9 ? 'cheer' : pct >= 0.7 ? 'happy' : pct >= 0.5 ? 'normal' : 'sad')}<span class="results-emoji">${emoji}</span></div>
         <h2>${esc(title)}</h2>
         <p class="muted">${msg}</p>
         <div class="results-ring">${ring(pct, { size: 150, stroke: 12, label: `<span class="cu">0</span>%`, sub: scoreLabel, grad: pct >= 0.8 ? ['#2ed3a1', '#22d3ee'] : pct >= 0.6 ? ['#5b8cff', '#a855f7'] : ['#ff7a59', '#ffc24b'] })}</div>
@@ -460,7 +461,7 @@ export function showResults(host, { title = 'おつかれさま！', emoji = '�
     if (row && !e.target.closest('[data-say]')) { const it = getItem(row.dataset.id); if (it) openItem(it); }
   });
   sfx.play('finish');
-  if (pct >= 0.95) setTimeout(() => fireworks({ bursts: 4 }), 250);
+  if (pct >= 0.95) setTimeout(() => { fireworks({ bursts: 4 }); balloons(); }, 250);
   else if (pct >= 0.8) setTimeout(() => confetti({ count: 110 }), 250);
   setTimeout(() => { if (host.isConnected && $('.results', host)) flushCelebrations(); }, 1200);
 }

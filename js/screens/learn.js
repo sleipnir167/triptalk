@@ -38,7 +38,7 @@ export default {
       items = items.slice(0, count);
     }
     if (!items.length) {
-      el.innerHTML = `<div class="wrap narrow">${emptyState({ emoji: '🏆', title: 'この範囲はすべて学習済みです！', text: '復習やスピード周回で記憶を定着させましょう。', actions: `<a class="btn btn-primary btn-lg" href="#/review">復習する</a><a class="btn btn-soft btn-lg" href="#/home">ホームへ</a>` })}</div>`;
+      el.innerHTML = `<div class="wrap narrow">${emptyState({ mood: 'cheer', title: 'この範囲はすべて学習済みです！', text: '復習やスピード周回で記憶を定着させましょう。', actions: `<a class="btn btn-primary btn-lg" href="#/review">復習する</a><a class="btn btn-soft btn-lg" href="#/home">ホームへ</a>` })}</div>`;
       return;
     }
 

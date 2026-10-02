@@ -20,6 +20,7 @@ export const DEFAULT_SETTINGS = {
   sfx: true,
   sfxVolume: 0.7,
   sparkle: true, // タップでキラキラ
+  bgm: false, // オルゴールBGM
   theme: 'auto',
   chatAutoSend: true,
   chatLevel: 'normal',

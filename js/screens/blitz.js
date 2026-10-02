@@ -7,7 +7,7 @@ import { pickWeighted } from '../srs.js';
 import { speak, stopSpeaking } from '../speech.js';
 import { sfx, haptic } from '../sfx.js';
 import { sessionBar, showResults } from '../components.js';
-import { recordAnswer, bump } from '../gamify.js';
+import { recordAnswer, bump, dayBump } from '../gamify.js';
 import { go, handoff } from '../router.js';
 import { distractors } from './learn.js';
 import { confetti, shake, floatText } from '../fx.js';
@@ -210,6 +210,7 @@ export default {
         const isBest = known > (state.stats.best.blitzCards || 0);
         if (isBest) { state.stats.best.blitzCards = known; save('stats'); }
         bump('blitz');
+        dayBump('blitz');
         $('.sbar', el)?.remove();
         const wrong = log.filter((l) => !l.ok).map((l) => l.item);
         const stage = $('.session', el);
@@ -311,6 +312,7 @@ export default {
         const isBest = score > (state.stats.best.blitzQuiz || 0);
         if (isBest) { state.stats.best.blitzQuiz = score; save('stats'); }
         bump('blitz');
+        dayBump('blitz');
         $('.sbar', el)?.remove();
         const wrong = log.filter((l) => !l.ok).map((l) => l.item);
         showResults($('.session', el), {

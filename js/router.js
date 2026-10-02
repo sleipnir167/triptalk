@@ -4,6 +4,7 @@ import { stopSpeaking } from './speech.js';
 import { closeAllModals } from './ui.js';
 import { bus } from './bus.js';
 import { stopAnyRecording } from './recorder.js';
+import { setBgmScreen } from './music.js';
 
 const ROUTES = {
   home: () => import('./screens/home.js'),
@@ -64,6 +65,8 @@ export async function route() {
   window.scrollTo(0, 0);
   view.scrollTop = 0;
   bus.emit('route', scr.nav || name);
+  // オルゴールBGMは学習の邪魔にならない画面だけで流す
+  setBgmScreen(['home', 'study', 'stats', 'settings'].includes(name) && !scr.immersive);
   view.classList.add('enter');
   setTimeout(() => view.classList.remove('enter'), 400);
   const cleanup = await scr.render(view, { arg, params });

@@ -123,3 +123,22 @@ export function fireworks({ bursts = 4, gap = 380 } = {}) {
     }, b * gap);
   }
 }
+
+/** 風船がふわっと上がる（全問正解・レベルアップのお祝いに） */
+export function balloons(count = 9) {
+  if (reduced()) return;
+  const colors = ['#ff5d8f', '#ffd36e', '#6b6cf6', '#3ddba8', '#c056e8', '#8be9ff', '#ff8a3d'];
+  const wrap = document.createElement('div');
+  wrap.className = 'balloons';
+  wrap.setAttribute('aria-hidden', 'true');
+  for (let i = 0; i < count; i++) {
+    const c = colors[i % colors.length];
+    const b = document.createElement('div');
+    b.className = 'balloon';
+    b.style.cssText = `--c:${c};left:${4 + Math.random() * 88}%;animation-delay:${(Math.random() * 0.9).toFixed(2)}s;animation-duration:${(4.2 + Math.random() * 2).toFixed(2)}s;--sway:${(Math.random() * 40 - 20).toFixed(0)}px;--s:${(0.75 + Math.random() * 0.5).toFixed(2)}`;
+    b.innerHTML = '<svg viewBox="0 0 60 110"><path d="M30 4 C48 4 56 20 56 36 C56 56 40 70 32 74 L35 79 L25 79 L28 74 C20 70 4 56 4 36 C4 20 12 4 30 4Z" fill="var(--c)"/><ellipse cx="20" cy="24" rx="6" ry="10" fill="#fff" opacity=".35" transform="rotate(-20 20 24)"/><path d="M30 79 q-6 10 2 18 q6 8 -2 13" stroke="rgba(255,255,255,.7)" stroke-width="1.4" fill="none"/></svg>';
+    wrap.append(b);
+  }
+  document.body.append(wrap);
+  setTimeout(() => wrap.remove(), 8000);
+}

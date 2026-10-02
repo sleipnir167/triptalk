@@ -1,12 +1,13 @@
 // AI添削（英作文・スピーキングの点数化）
 import { $, $$, esc, ring, bar, fmtDate, promptDialog, toast } from '../ui.js';
 import { icon } from '../icons.js';
+import { mascot } from '../mascot.js';
 import { state, save } from '../store.js';
 import { sceneById, scenes } from '../content.js';
 import { speak, stopSpeaking } from '../speech.js';
 import { sfx } from '../sfx.js';
 import { sayBtn, createMic, addToMyWords } from '../components.js';
-import { addXP, bump, flushCelebrations } from '../gamify.js';
+import { addXP, bump, flushCelebrations, dayBump } from '../gamify.js';
 import { WRITE_PROMPTS } from '../data/dialogues.js';
 import { aiReady, correctText, aiWaitHint } from '../ai.js';
 import { checkEnglish, checkHTML } from '../wcheck.js';
@@ -112,7 +113,7 @@ export default {
         addXP(5);
         return;
       }
-      out.innerHTML = `<div class="card result-card">${free}</div><div class="report-loading"><div class="plane-loader">✈️</div><p>AIが添削中…${aiWaitHint('explain')}</p></div>`;
+      out.innerHTML = `<div class="card result-card">${free}</div><div class="report-loading"><div class="lumi-loader">${mascot('think')}</div><p>ルミが魔法で添削中…${aiWaitHint('explain')}</p></div>`;
       $('.submit', el).disabled = true;
       try {
         const { data, cached } = await correctText({ situation: cur.ja, text, mode: inputMode === 'speak' ? 'speaking' : 'writing' });
@@ -124,6 +125,7 @@ export default {
           const xp = 15 + Math.round((data.total || 0) / 10);
           addXP(xp);
           bump('aiWrites');
+          dayBump('write');
           state.history.unshift({ type: 'write', t: Date.now(), text, prompt, result: data });
           state.history = state.history.slice(0, 60);
           save('history');

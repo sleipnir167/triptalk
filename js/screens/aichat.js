@@ -1,12 +1,13 @@
 // AI会話（ミッション型ロールプレイ）
 import { $, $$, esc, modal, toast, fmtDate, ring, bar, confirmDialog } from '../ui.js';
 import { icon } from '../icons.js';
+import { mascot } from '../mascot.js';
 import { state, save } from '../store.js';
 import { sceneById } from '../content.js';
 import { speak, stopSpeaking } from '../speech.js';
 import { sfx } from '../sfx.js';
 import { sessionBar, sayBtn, createMic, addToMyWords } from '../components.js';
-import { addXP, bump, addStudyTime, flushCelebrations } from '../gamify.js';
+import { addXP, bump, addStudyTime, flushCelebrations, dayBump } from '../gamify.js';
 import { go } from '../router.js';
 import { AI_SCENARIOS } from '../data/dialogues.js';
 import { aiReady, chatTurn, chatStart, chatReport, aiWaitHint } from '../ai.js';
@@ -288,9 +289,10 @@ export default {
       stopSpeaking();
       $('.sbar', el)?.remove();
       const host = $('.session', el);
-      host.innerHTML = `<div class="report-loading"><div class="plane-loader">✈️</div><p>AIがレポートを作成中…${aiWaitHint('explain')}</p></div>`;
+      host.innerHTML = `<div class="report-loading"><div class="lumi-loader">${mascot('think')}</div><p>ルミが魔法でレポートを作成中…${aiWaitHint('explain')}</p></div>`;
       addStudyTime((Date.now() - t0) / 1000);
       bump('aiChats');
+      dayBump('chat');
       if (missionDone) bump('missions');
       try {
         const { data } = await chatReport({ sc, transcript: transcript.join('\n') });

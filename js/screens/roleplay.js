@@ -6,7 +6,7 @@ import { sceneById } from '../content.js';
 import { speak, stopSpeaking } from '../speech.js';
 import { sfx } from '../sfx.js';
 import { sessionBar, sayBtn, createMic, showResults } from '../components.js';
-import { addXP, bump, addStudyTime } from '../gamify.js';
+import { addXP, bump, addStudyTime, dayBump } from '../gamify.js';
 import { scoreAgainst, diffHTML } from '../scoring.js';
 import { go } from '../router.js';
 import { DIALOGUES, AI_SCENARIOS } from '../data/dialogues.js';
@@ -148,6 +148,7 @@ export default {
       state.stats.roleplay[d.id] = { best: Math.max(prev, avg), last: Date.now(), plays: (state.stats.roleplay[d.id]?.plays || 0) + 1 };
       save('stats');
       bump('roleplays');
+      dayBump('rp');
       const bonus = st * 10;
       xpSum += bonus; addXP(bonus);
       if (st === 3) confetti();
@@ -164,7 +165,6 @@ export default {
           ...(ai ? [{ label: `${icon('bot', 18)} AIで自由に会話`, cls: 'btn-primary', onClick: () => go(`#/aichat/${ai.id}`) }] : []),
         ],
       });
-      addStudyTime(0);
     }
 
     run();

@@ -83,6 +83,7 @@ export default {
         ${sec('look', '表示・効果音', 'sun', `
           ${row('テーマ', seg('theme', st.theme, [['auto', '自動'], ['dark', 'ダーク'], ['light', 'ライト']]))}
           ${row('タップでキラキラ', sw('sparkle', st.sparkle !== false), 'さわった所に小さな光が舞います（動きを減らす設定の端末では表示しません）')}
+          ${row('オルゴールBGM', sw('bgm', !!st.bgm), 'ホーム・メニュー・記録・設定の画面で、オリジナルのワルツを小さく流します（学習中・読み上げ中は止まります）')}
           ${row('効果音', sw('sfx', st.sfx))}
           ${row('効果音の音量', `<input type="range" min="0.1" max="1" step="0.05" value="${st.sfxVolume}" data-range="sfxVolume"><output>${Math.round(st.sfxVolume * 100)}%</output>`)}
           <div class="row gap-8 wrap">${['correct', 'wrong', 'combo', 'levelup', 'badge'].map((s) => `<button class="btn btn-ghost btn-sm" data-sfx="${s}">${{ correct: '正解', wrong: '不正解', combo: 'コンボ', levelup: 'レベルアップ', badge: 'スタンプ' }[s]}</button>`).join('')}</div>
@@ -329,7 +330,8 @@ export default {
       const choice = await modal({
         title: 'AI解説の一括事前生成',
         body: `<p class="small muted">解説がまだ保存されていない項目を順番に生成します。生成済みの解説は学習中に無料・即時で表示されます。</p>
-          <div class="seg pf-scope"><button class="active" data-v="weak">苦手・学習中</button><button data-v="new">未学習</button><button data-v="all">すべて</button></div>
+          <div class="seg pf-scope"><button class="active" data-v="weak">苦手・学習中</button><button data-v="cruise">🚢 クルーズ</button><button data-v="fav">⭐ お気に入り</button><button data-v="new">未学習</button><button data-v="all">すべて</button></div>
+          <p class="small muted mt-8">🚢 船内のWi-Fiは有料のことが多いので、出航前に「クルーズ」を生成しておくと船の上でも解説を無料・オフラインで見られます。</p>
           <div class="seg pf-n mt-12"><button data-v="10">10件</button><button class="active" data-v="30">30件</button><button data-v="100">100件</button></div>
           <p class="small muted mt-8">※ 1件につきAIを1回呼び出します（上限設定の対象）。</p>`,
         actions: [{ label: 'キャンセル', value: null }, { label: '開始', cls: 'btn-primary', onClick: (close, m) => close({ scope: $('.pf-scope .active', m).dataset.v, n: +$('.pf-n .active', m).dataset.v }) }],
@@ -339,6 +341,8 @@ export default {
       let cands = allItems();
       if (choice.scope === 'weak') cands = cands.filter((it) => isWeak(it) || getCard(it.id)?.st === 1);
       if (choice.scope === 'new') cands = cands.filter((it) => !getCard(it.id)?.reps);
+      if (choice.scope === 'cruise') cands = cands.filter((it) => it.scene === 'cruise' || it.scene === 'shore');
+      if (choice.scope === 'fav') cands = cands.filter((it) => state.favs[it.id]);
       const todo = [];
       for (const it of cands) { if (todo.length >= choice.n) break; if (!(await cacheGet('explain:' + it.id))) todo.push(it); }
       if (!todo.length) { toast('対象の項目はすべて生成済みです', { emoji: '✅' }); return; }

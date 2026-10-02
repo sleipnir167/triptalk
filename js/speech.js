@@ -2,6 +2,7 @@
 import { state } from './store.js';
 import { startRecording, blobToWavBase64, recorderSupported } from './recorder.js';
 import { aiTranscribe, aiSttReady } from './ai.js';
+import { bgm } from './music.js';
 
 // ================= TTS =================
 const synth = window.speechSynthesis;
@@ -75,7 +76,8 @@ export function speak(text, { rate, lang, slow = false, voice, gender } = {}) {
     u.rate = slow ? 0.62 : rate || state.settings.ttsRate || 0.95;
     u.pitch = pitch;
     let finished = false;
-    const fin = () => { if (finished) return; finished = true; clearTimeout(guard); resolve(); };
+    bgm.pause('tts');
+    const fin = () => { if (finished) return; finished = true; clearTimeout(guard); bgm.resume('tts'); resolve(); };
     u.onend = fin; u.onerror = fin;
     // iOS で onend が来ないことがある対策
     const guard = setTimeout(fin, 1500 + text.length * 140 / (u.rate || 1));

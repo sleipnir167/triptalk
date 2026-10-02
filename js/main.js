@@ -9,6 +9,7 @@ import { installTapSounds, toast, h, $ } from './ui.js';
 import { bus } from './bus.js';
 import { ensureBuiltin } from './ai.js';
 import { initSky } from './deco.js';
+import { bgm, setBgmScreen } from './music.js';
 import { pixieDust } from './fx.js';
 
 export function applyTheme() {
@@ -25,12 +26,15 @@ async function boot() {
   ensureBuiltin();
   applyTheme();
   matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', applyTheme);
-  bus.on('settings', (k) => { if (k === 'theme') applyTheme(); });
+  bus.on('settings', (k) => {
+    if (k === 'theme') applyTheme();
+    if (k === 'bgm') { if (state.settings.bgm) setBgmScreen(true); else bgm.stop(); }
+  });
   renderNav();
   initVoices();
   installTapSounds();
   initSky();
-  const unlock = () => unlockAudio();
+  const unlock = () => { unlockAudio(); bgm.kick(); };
   document.addEventListener('pointerdown', unlock, { passive: true });
   // タップした所に小さなきらきら（設定でオフにできる）
   document.addEventListener('pointerdown', (e) => { if (state.settings.sparkle !== false && e.pointerType !== 'pen') pixieDust(e.clientX, e.clientY); }, { passive: true });

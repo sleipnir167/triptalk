@@ -1423,3 +1423,134 @@ h1, .results-hero h2 { text-shadow: var(--heading-glow); }
   .mh-ship { left: 8%; }
 }
 .bp-icon .ico.no-rot { transform: none; }
+
+/* ---------- ルミ（オリジナルのマスコット） ---------- */
+.mascot { display: block; overflow: visible; }
+.mascot .m-eyes { transform-box: fill-box; transform-origin: center; animation: blink 5s infinite; }
+.mascot .m-wings { transform-box: view-box; transform-origin: 100px 100px; animation: flutter 0.9s ease-in-out infinite alternate; }
+.mascot .m-twinkle { animation: twinkle 1.6s ease-in-out infinite; }
+.mascot .m-twinkle.t2 { animation-delay: 0.8s; }
+.mascot .m-tear { animation: tear 2s ease-in infinite; }
+.mascot.mood-cheer .m-wand, .mascot.mood-wow .m-wand { animation: wave 1.2s ease-in-out infinite alternate; transform-box: view-box; }
+@keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+@keyframes flutter { from { transform: scaleY(1); } to { transform: scaleY(0.82); } }
+@keyframes tear { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(14px); opacity: 0; } }
+@keyframes wave { from { transform: rotate(-38deg); } to { transform: rotate(-20deg); } }
+@keyframes lumiFloat { 50% { transform: translateY(-7px) rotate(-3deg); } }
+
+.lumi-row { display: flex; align-items: center; gap: 12px; margin: -4px 0 18px; }
+.lumi-float { width: 86px; flex-shrink: 0; cursor: pointer; animation: lumiFloat 3.2s ease-in-out infinite; filter: drop-shadow(0 8px 16px rgba(242, 169, 34, 0.35)); }
+.lumi-bubble { position: relative; flex: 1; padding: 12px 16px; border-radius: 20px; background: var(--surface-solid); border: 1.5px solid var(--gold-line); box-shadow: var(--shadow); }
+.lumi-bubble::before { content: ""; position: absolute; left: -9px; top: 50%; width: 16px; height: 16px; background: var(--surface-solid); border-left: 1.5px solid var(--gold-line); border-bottom: 1.5px solid var(--gold-line); transform: translateY(-50%) rotate(45deg); }
+.lumi-bubble small { font-family: var(--font-script); font-size: 20px; color: var(--accent-text); line-height: 1; }
+.lumi-bubble p { margin: 2px 0 0; font-weight: 600; color: var(--text); }
+.bgm-btn { font-size: 18px; }
+.bgm-btn.on { box-shadow: 0 0 0 2px rgba(255, 211, 110, 0.6); }
+
+.results-mascot { position: relative; width: 140px; animation: bounceIn 0.7s cubic-bezier(.2, 1.6, .4, 1); filter: drop-shadow(0 10px 22px rgba(242, 169, 34, 0.35)); }
+.results-mascot .mascot { animation: lumiFloat 3s ease-in-out infinite; }
+.results-mascot .results-emoji { position: absolute; right: -14px; top: -6px; font-size: 40px; }
+.celebrate-mascot { width: 110px; margin: -6px auto -10px; animation: lumiFloat 2.6s ease-in-out infinite; }
+.lumi-loader { width: 110px; animation: lumiFloat 1.6s ease-in-out infinite; }
+.lumi-mini { display: inline-block; width: 34px; vertical-align: middle; animation: lumiFloat 1.6s ease-in-out infinite; }
+.empty-mascot { width: 130px; margin: 0 auto 8px; animation: lumiFloat 3s ease-in-out infinite; }
+
+/* ---------- マーキーの電球（航海チケットの縁） ---------- */
+.bulbs { position: absolute; inset: 7px; z-index: 1; border-radius: 22px; pointer-events: none;
+  --bulb: #fff3c4;
+  background:
+    radial-gradient(circle at 9px 3px, var(--bulb) 2.1px, transparent 3px) top left / 18px 6px repeat-x,
+    radial-gradient(circle at 9px 3px, var(--bulb) 2.1px, transparent 3px) bottom left / 18px 6px repeat-x,
+    radial-gradient(circle at 3px 9px, var(--bulb) 2.1px, transparent 3px) top left / 6px 18px repeat-y,
+    radial-gradient(circle at 3px 9px, var(--bulb) 2.1px, transparent 3px) top right / 6px 18px repeat-y;
+  filter: drop-shadow(0 0 3px rgba(255, 211, 110, 0.9)); }
+.bulbs.b { inset: 7px 7px 7px 7px; background-position: 9px 0, 9px 100%, 0 9px, 100% 9px; animation: chase 1.4s steps(1) infinite; }
+.bulbs.a { animation: chase 1.4s steps(1) infinite reverse; }
+@keyframes chase { 0% { opacity: 1; } 50% { opacity: 0.25; } }
+.boarding .bp-main, .boarding .bp-stub { position: relative; z-index: 2; }
+
+/* ---------- お城のプロジェクションショー ---------- */
+.magic-hero .castle { animation: projection 14s ease-in-out infinite alternate; }
+@keyframes projection { 0% { filter: drop-shadow(0 0 22px rgba(255, 211, 110, 0.28)) hue-rotate(0deg); } 50% { filter: drop-shadow(0 0 26px rgba(255, 138, 216, 0.4)) hue-rotate(-35deg); } 100% { filter: drop-shadow(0 0 22px rgba(139, 233, 255, 0.35)) hue-rotate(40deg); } }
+
+/* ---------- 今日のマジカル・クエスト（スタンプラリー） ---------- */
+.quest-card { margin-top: 18px; position: relative; overflow: hidden; }
+.quest-card::after { content: "✦"; position: absolute; right: 14px; top: 6px; font-size: 54px; color: var(--accent-text); opacity: 0.12; }
+.qc-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.qc-head small { color: var(--muted); font-weight: 600; }
+.quest-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.quest { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 16px; background: var(--surface-2); border: 1px dashed var(--gold-line); }
+.quest b { display: block; font-size: 13px; line-height: 1.3; margin-bottom: 6px; }
+.quest .bar { height: 6px; }
+.q-stamp { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-size: 22px; flex-shrink: 0; border: 2px dashed var(--gold-line); }
+.q-num { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+.quest.done { border-style: solid; background: linear-gradient(135deg, rgba(255, 227, 154, 0.22), rgba(255, 143, 183, 0.12)); }
+.quest.done .q-stamp { border: 2.5px solid #e8a720; background: radial-gradient(circle, #fff3c4, #ffd36e); transform: rotate(-12deg); animation: stampIn 0.5s cubic-bezier(.2, 1.6, .4, 1); }
+.q-ok { color: #b45309; font-size: 24px; }
+.quest.done .bar > i { background: linear-gradient(90deg, var(--gold-a), var(--gold-b)); }
+@keyframes stampIn { from { transform: scale(2) rotate(-40deg); opacity: 0; } }
+
+/* ---------- 絵本風のTips ---------- */
+.tip-card { background: linear-gradient(160deg, #fffaf0, #f6e7c6) !important; color: #4a3410; border: 2px solid #d9b45a !important; box-shadow: inset 0 0 0 5px #fffaf0, inset 0 0 0 6.5px rgba(217, 180, 90, 0.7), var(--shadow) !important; }
+.tip-card h3 { color: #6b4a12; }
+.tip-card p { color: #4a3410 !important; font-size: 15.5px; line-height: 1.75; }
+.dropcap { float: left; font-family: var(--font-display); font-size: 40px; line-height: 0.95; margin: 4px 8px 0 0; color: #b45309; }
+.tip-card .tip-deco { color: #d9a12b; opacity: 0.18; }
+
+/* ---------- コレクションピン（エナメルピン風） ---------- */
+.pinboard { margin-top: 18px; padding: 20px; border-radius: 26px; color: #fff;
+  background: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1.4px) 0 0 / 7px 7px, linear-gradient(160deg, #1d1a5c, #2c1f74 60%, #3a1d6e);
+  border: 1.5px solid rgba(255, 211, 110, 0.4); box-shadow: var(--shadow-lg); }
+.pinboard-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 10px; }
+.pb-title small { letter-spacing: 0.25em; font-size: 10px; color: #ffe39a; }
+.pb-title h3 { font-size: 22px; color: #fff; }
+.pb-count b { font-size: 30px; font-weight: 800; color: #ffe39a; }
+.pb-count span { color: rgba(255, 255, 255, 0.7); margin-left: 3px; }
+.pinboard .bar { background: rgba(255, 255, 255, 0.12); }
+.pin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 20px 12px; margin-top: 18px; justify-items: center; }
+.pin { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 112px; transform: rotate(var(--r, 0deg)); }
+.pin-rim { width: 92px; height: 92px; border-radius: 50%; padding: 6px; position: relative;
+  background: conic-gradient(from 210deg, #fff6d0, #d9a12b, #fff3c4, #b8860b, #fff6d0, #d9a12b, #fff6d0);
+  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.45), 0 2px 0 rgba(255, 255, 255, 0.25) inset; }
+.pin-rim::before { content: ""; position: absolute; left: 50%; bottom: -5px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #c99a2e; box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4); }
+.pin-face { width: 100%; height: 100%; border-radius: 50%; display: grid; place-items: center; position: relative; overflow: hidden;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--c) 55%, #fff), var(--c) 58%, color-mix(in srgb, var(--c) 70%, #000));
+  box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.35), inset 0 -2px 4px rgba(255, 255, 255, 0.25); }
+.pin-face::after { content: ""; position: absolute; top: 9%; left: 13%; width: 48%; height: 28%; border-radius: 50%; background: linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0)); transform: rotate(-24deg); }
+.pin-emoji { font-size: 36px; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3)); position: relative; }
+.pin-name { margin-top: 6px; padding: 2px 10px; border-radius: 6px; font-size: 10.5px; font-weight: 800; letter-spacing: 0.04em; text-align: center; color: #3d2600; background: linear-gradient(135deg, #ffe39a, #e8a720); box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); max-width: 112px; }
+.pin-date { font-size: 10px; color: rgba(255, 255, 255, 0.7); }
+.pin.locked .pin-rim { background: conic-gradient(from 210deg, #e5e7eb, #8b8fa3, #e5e7eb, #6b7083, #e5e7eb); }
+.pin.locked .pin-face { filter: grayscale(1) brightness(0.65); }
+.pin.locked .pin-emoji { font-weight: 800; color: #fff; font-size: 30px; }
+.pin.locked .pin-name { background: rgba(255, 255, 255, 0.18); color: rgba(255, 255, 255, 0.7); box-shadow: none; }
+.stamp-drop .pin { transform: none; animation: pinDrop 0.7s cubic-bezier(.2, 1.6, .4, 1); }
+.stamp-drop .pin-rim { width: 130px; height: 130px; }
+.stamp-drop .pin-emoji { font-size: 52px; }
+.stamp-drop .pin-date { color: rgba(255, 255, 255, 0.8); }
+@keyframes pinDrop { from { transform: translateY(-60px) scale(1.6) rotate(-20deg); opacity: 0; } }
+
+/* ---------- 風船 ---------- */
+.balloons { position: fixed; inset: 0; z-index: 92; pointer-events: none; overflow: hidden; }
+.balloon { position: absolute; bottom: -140px; width: calc(56px * var(--s, 1)); animation: rise 5s ease-in forwards; }
+.balloon svg { display: block; width: 100%; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.2)); }
+@keyframes rise { 0% { transform: translate(0, 0) rotate(-4deg); } 50% { transform: translate(var(--sway), -55vh) rotate(4deg); } 100% { transform: translate(calc(var(--sway) * -1), -120vh) rotate(-3deg); } }
+
+@media (max-width: 900px) { .quest-list { grid-template-columns: 1fr; } }
+@media (max-width: 680px) {
+  .lumi-float { width: 70px; }
+  .lumi-bubble p { font-size: 14px; }
+  .pin-grid { grid-template-columns: repeat(3, 1fr); gap: 16px 6px; }
+  .pin { width: 100px; }
+  .pin-rim { width: 80px; height: 80px; }
+  .pin-emoji { font-size: 30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lumi-float, .results-mascot .mascot, .celebrate-mascot, .lumi-loader, .lumi-mini, .empty-mascot, .bulbs, .magic-hero .castle, .mascot * { animation: none !important; }
+}
+.mascot.mood-cheer .m-wand, .mascot.mood-wow .m-wand { transform-origin: 150px 150px; }
+@media (max-width: 820px) {
+  .magic-hero .head-badges { flex-wrap: nowrap; gap: 8px; }
+  .magic-hero .hb small { display: none; }
+}
+@media (max-width: 680px) { .trip-banner.unset { flex-wrap: nowrap; } .trip-banner.unset .trip-text { min-width: 0; } }

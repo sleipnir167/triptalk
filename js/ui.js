@@ -1,6 +1,7 @@
 // UI ユーティリティ（DOM・モーダル・トースト・リング等）
 import { icon } from './icons.js';
 import { sfx } from './sfx.js';
+import { mascot } from './mascot.js';
 
 export const $ = (s, r = document) => r.querySelector(s);
 export const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -185,6 +186,7 @@ export function richText(text) {
   return `<div class="rich">${html}</div>`;
 }
 
-export function emptyState({ emoji = '🗺️', title = '', text = '', actions = '' }) {
-  return `<div class="empty"><div class="empty-emoji">${emoji}</div><h3>${title}</h3><p class="muted">${text}</p><div class="row center gap-8 wrap">${actions}</div></div>`;
+export function emptyState({ emoji = '🗺️', title = '', text = '', actions = '', mood = '' }) {
+  const top = mood ? `<div class="empty-mascot">${mascot(mood)}</div>` : `<div class="empty-emoji">${emoji}</div>`;
+  return `<div class="empty">${top}<h3>${title}</h3><p class="muted">${text}</p><div class="row center gap-8 wrap">${actions}</div></div>`;
 }

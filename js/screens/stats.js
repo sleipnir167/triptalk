@@ -138,12 +138,13 @@ export default {
           ${weak.length ? `<div class="mini-list">${weak.map((it, i) => { const cc = getCard(it.id); return `<div class="ml-row tap" data-id="${it.id}"><span class="rank">${i + 1}</span>${masteryDot(it)}<div class="ml-text"><div class="en">${esc(it.en)}</div><div class="small muted">${esc(it.ja)} · ✕${cc.ng || 0} ✓${cc.ok || 0}</div></div>${sayBtn(it.en)}</div>`; }).join('')}</div>` : '<p class="muted small">まだ苦手な項目はありません。</p>'}
         </section>
 
-        <section class="passport">
-          <div class="passport-cover">
-            <div class="pp-emblem">${icon('globe', 40)}</div>
-            <div><small>TRAVEL ENGLISH</small><h3>PASSPORT</h3><p>スタンプ ${earned} / ${badges.length}</p></div>
+        <section class="pinboard">
+          <div class="pinboard-head">
+            <div class="pb-title"><small>✦ MAGICAL PIN COLLECTION ✦</small><h3>ピンコレクション</h3></div>
+            <div class="pb-count"><b>${earned}</b><span>/ ${badges.length}</span></div>
           </div>
-          <div class="stamp-grid">${badges.map((b, i) => stampHTML(b, got[b.id], i)).join('')}</div>
+          ${bar(earned / badges.length, 'bar-xp')}
+          <div class="pin-grid">${badges.map((b, i) => stampHTML(b, got[b.id], i)).join('')}</div>
         </section>
 
         <section class="card">

@@ -1,14 +1,18 @@
-import { $, esc, ring, bar, modal, todayKey } from '../ui.js';
+import { $, esc, ring, bar, modal, todayKey, toast } from '../ui.js';
 import { icon } from '../icons.js';
 import { state } from '../store.js';
 import { dueCount, mastery, getCard } from '../srs.js';
 import { scenes, sceneItems, pool, allItems, isWeak } from '../content.js';
-import { levelInfo, streak, dayRec, flushCelebrations } from '../gamify.js';
+import { levelInfo, streak, dayRec, flushCelebrations, todayQuests, QUEST_BONUS } from '../gamify.js';
 import { go } from '../router.js';
 import { TIPS } from '../data/scenes.js';
 import { DIALOGUES } from '../data/dialogues.js';
 import { masteryDot, sayBtn, openItem } from '../components.js';
 import { castleSVG, shipSVG, fireworksSVG } from '../deco.js';
+import { mascot, lumiSays } from '../mascot.js';
+import { setSetting } from '../store.js';
+import { sfx } from '../sfx.js';
+import { sparkle } from '../fx.js';
 
 function greeting() {
   const h = new Date().getHours();
@@ -76,6 +80,7 @@ export default {
     const weak = allItems().filter((it) => isWeak(it)).slice(0, 6);
     const flight = 'TT' + todayKey().replace(/-/g, '').slice(2);
     const cruise = /クルーズ|cruise|船/i.test(state.settings.trip?.name || '');
+    const quests = todayQuests();
 
     el.innerHTML = `
     <div class="wrap home">
@@ -91,10 +96,16 @@ export default {
           <div class="head-badges">
             <div class="hb ${st ? 'flame' : ''}" title="連続学習日数">${icon('flame', 18)}<b>${st}</b><small>日連続</small></div>
             <div class="hb" title="レベル"><span class="lv-mini">Lv.${L.level}</span><small>${esc(L.title)}</small></div>
+            <button class="btn-icon soft bgm-btn ${state.settings.bgm ? 'on' : ''}" aria-label="オルゴールBGM" title="オルゴールBGM">${state.settings.bgm ? '🎵' : '🔇'}</button>
             <a class="btn-icon soft head-settings" href="#/settings" aria-label="設定">${icon('settings', 20)}</a>
           </div>
         </div>
       </header>
+
+      <div class="lumi-row">
+        <div class="lumi-float">${mascot(due ? 'wow' : today.xp >= goal ? 'cheer' : 'happy')}</div>
+        <div class="lumi-bubble"><small>ルミ</small><p>${esc(lumiSays({ due, newLeft: Math.min(newLeft, unlearned), today: today.xp, goal, streak: st, trip, cruise }))}</p></div>
+      </div>
 
       ${trip ? `
       <div class="trip-banner ${trip.days < 0 ? 'past' : ''}">
@@ -113,6 +124,7 @@ export default {
       </a>`}
 
       <section class="boarding">
+        <span class="bulbs a"></span><span class="bulbs b"></span>
         <div class="bp-main">
           <div class="bp-top"><span>✦ TRIPTALK MAGIC VOYAGE</span><span>${cruise ? 'VOYAGE' : 'FLIGHT'} ${flight}</span></div>
           <div class="bp-route">
@@ -136,6 +148,18 @@ export default {
           <small>TODAY'S GOAL</small>
           ${ring(today.xp / goal, { size: 112, stroke: 11, label: today.xp, sub: `/ ${goal} XP`, grad: ['#ffb347', '#ff7a59'], track: 'rgba(255,255,255,.18)' })}
           <div class="barcode"></div>
+        </div>
+      </section>
+
+      <section class="card quest-card">
+        <div class="qc-head"><h3>🎟️ 今日のマジカル・クエスト</h3><small>3つクリアでボーナス +${QUEST_BONUS} XP</small></div>
+        <div class="quest-list">
+          ${quests.map((q) => `
+            <div class="quest ${q.done ? 'done' : ''}">
+              <span class="q-stamp">${q.done ? '<span class="q-ok">✦</span>' : q.icon}</span>
+              <div class="grow"><b>${esc(q.label)}</b>${bar(q.v / q.target)}</div>
+              <span class="q-num">${q.fmt ? q.fmt(q.v) : q.v}/${q.fmt ? q.fmt(q.target) : q.target}</span>
+            </div>`).join('')}
         </div>
       </section>
 
@@ -168,14 +192,23 @@ export default {
             : `<p class="muted small">間違えた項目がここに集まります。今のところ苦手はありません 👏</p>`}
         </section>
         <section class="card tip-card">
-          <div class="section-head in-card"><h3>💡 今日の旅英語Tips</h3></div>
-          <p>${esc(tip)}</p>
-          <div class="tip-deco">✈</div>
+          <div class="section-head in-card"><h3>📜 今日の魔法のTips</h3></div>
+          <p><span class="dropcap">${esc(tip.slice(0, 1))}</span>${esc(tip.slice(1))}</p>
+          <div class="tip-deco">✦</div>
         </section>
       </div>
     </div>`;
 
     el.addEventListener('click', (e) => {
+      const m = e.target.closest('.bgm-btn');
+      if (m) {
+        setSetting('bgm', !state.settings.bgm);
+        m.classList.toggle('on', !!state.settings.bgm);
+        m.textContent = state.settings.bgm ? '🎵' : '🔇';
+        toast(state.settings.bgm ? 'オルゴールBGMをオンにしました（ホーム・メニュー画面で流れます）' : 'BGMをオフにしました', { emoji: '🎵', ms: 2200 });
+        return;
+      }
+      if (e.target.closest('.lumi-float')) { sfx.play('badge'); sparkle(e.target.closest('.lumi-float'), 12); }
       const t = e.target.closest('[data-scene]');
       if (t) { const sc = scenes().find((s) => s.id === t.dataset.scene); openScene(sc); }
       const row = e.target.closest('.ml-row');

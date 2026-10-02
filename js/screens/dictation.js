@@ -17,7 +17,7 @@ export default {
     let items = handoff.take();
     if (!items?.length) items = pickWeighted(pool({ scene: params.scene || 'all', kind: params.kind || 'all' }), +(params.count || 10));
     if (!items.length) {
-      el.innerHTML = `<div class="wrap narrow">${emptyState({ emoji: '🔍', title: '出題できる項目がありません', text: `「${scopeLabel(params.scene)}」に該当する項目がありません。`, actions: `<a class="btn btn-primary" href="#/study">学習メニューへ</a>` })}</div>`;
+      el.innerHTML = `<div class="wrap narrow">${emptyState({ mood: 'think', title: '出題できる項目がありません', text: `「${scopeLabel(params.scene)}」に該当する項目がありません。`, actions: `<a class="btn btn-primary" href="#/study">学習メニューへ</a>` })}</div>`;
       return;
     }
     let idx = 0, xpSum = 0, combo = 0;
