@@ -49,7 +49,10 @@ function pluck(freq, t, vol) {
 }
 
 function schedule() {
-  while (nextTime < ctx.currentTime + 0.6) {
+  // バックグラウンドなどで大きく遅れたときは、取りこぼした音を一気に鳴らさず今から再開する
+  if (nextTime < ctx.currentTime - 0.2) nextTime = ctx.currentTime + 0.05;
+  let guard = 0;
+  while (nextTime < ctx.currentTime + 0.6 && guard++ < 32) {
     const [note, beats] = MELODY[mi];
     if (note) pluck(N(note), nextTime, 0.5);
     // 小節の頭でベース、2・3拍目で和音

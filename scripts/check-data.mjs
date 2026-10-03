@@ -52,6 +52,27 @@ for (const [t, h, want] of cases) {
   if (s !== want) err(`採点: "${h}" → ${s}点（期待 ${want}）`);
 }
 
+// 今日のクエストの選び方：どの日付でも必ず終わり、重ならない3つを選ぶこと
+// （以前、日によって無限ループして起動画面から進まなくなる不具合があった）
+globalThis.matchMedia = () => ({ matches: false, addEventListener() {} });
+const { pickQuestIndexes } = await import('../js/gamify.js');
+{
+  const start = new Date(2026, 0, 1);
+  let checked = 0;
+  for (let i = 0; i < 365 * 3; i++) {
+    const d = new Date(start); d.setDate(start.getDate() + i);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    for (const n of [7, 8]) {
+      const t0 = Date.now();
+      const p = pickQuestIndexes(key, n);
+      if (Date.now() - t0 > 50) err(`クエスト選択が遅い: ${key} (${n})`);
+      if (p.length !== 3 || new Set(p).size !== 3 || p.some((x) => x < 0 || x >= n)) err(`クエスト選択が不正: ${key} (${n}) → ${p}`);
+      checked++;
+    }
+  }
+  console.log(`クエスト選択 ${checked} 通り確認`);
+}
+
 const words = all.filter((i) => i.kind === 'word').length;
 console.log(`\n項目 ${all.length}（単語 ${words}・フレーズ ${all.length - words}）／台本 ${DIALOGUES.length}／AI会話 ${AI_SCENARIOS.length}／添削お題 ${WRITE_PROMPTS.length}`);
 console.log(errors ? `✗ エラー ${errors} 件` : '✓ エラーなし', warns ? `（注意 ${warns} 件）` : '');

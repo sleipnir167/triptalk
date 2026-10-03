@@ -52,7 +52,11 @@ export async function route() {
   closeAllModals();
   document.querySelectorAll('.showmode, .viz-tip').forEach((e) => e.remove());
   let mod;
-  try { mod = await ROUTES[name](); } catch (e) { console.error(e); return; }
+  try { mod = await ROUTES[name](); } catch (e) {
+    console.error(e);
+    $('#view').innerHTML = `<div class="wrap narrow"><div class="empty"><div class="empty-emoji">📡</div><h3>画面を読み込めませんでした</h3><p class="muted">通信状態を確認して、再読み込みしてください。</p><div class="row center"><button class="btn btn-primary" onclick="location.reload()">再読み込み</button></div></div></div>`;
+    return;
+  }
   if (my !== seq) return;
   const scr = mod.default;
   // 画面ごとに #view を作り直す（前の画面のイベントリスナーを確実に破棄）
@@ -69,7 +73,17 @@ export async function route() {
   setBgmScreen(['home', 'study', 'stats', 'settings'].includes(name) && !scr.immersive);
   view.classList.add('enter');
   setTimeout(() => view.classList.remove('enter'), 400);
-  const cleanup = await scr.render(view, { arg, params });
+  let cleanup;
+  try {
+    cleanup = await scr.render(view, { arg, params });
+  } catch (e) {
+    // 画面の表示に失敗しても、アプリ全体は止めずにホームへ戻れるようにする
+    console.error(e);
+    app.classList.remove('immersive');
+    view.innerHTML = `<div class="wrap narrow"><div class="empty"><div class="empty-emoji">🛠️</div><h3>この画面を表示できませんでした</h3>
+      <p class="muted">${String(e?.message || e).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))}</p>
+      <div class="row center gap-8 wrap"><a class="btn btn-primary" href="#/study">学習メニューへ</a><button class="btn btn-soft" onclick="location.reload()">再読み込み</button></div></div></div>`;
+  }
   if (my !== seq) { try { cleanup?.(); } catch {} return; }
   current = { cleanup };
 }

@@ -18,8 +18,9 @@ export const TITLES = [
 export const xpForLevel = (L) => 30 * (L - 1) * L; // 累計XP
 
 export function levelInfo(xp = state.stats.xp || 0) {
+  if (!Number.isFinite(xp) || xp < 0) xp = 0;
   let L = 1;
-  while (xp >= xpForLevel(L + 1)) L++;
+  while (L < 999 && xp >= xpForLevel(L + 1)) L++;
   const cur = xp - xpForLevel(L);
   const need = xpForLevel(L + 1) - xpForLevel(L);
   const t = [...TITLES].reverse().find(([lv]) => L >= lv) || TITLES[0];
@@ -103,16 +104,31 @@ export const QUESTS = [
 export const QUEST_XP = 20;
 export const QUEST_BONUS = 50;
 
+/**
+ * 日付ごとに決まる並び（0..n-1 から count 個）。
+ * 32ビット整数だけで計算する乱数（mulberry32）で並べ替えるので、必ず有限回で終わる。
+ * ※ 以前は大きな数の掛け算で下位ビットが失われ、日によって同じ番号しか出ずに無限ループしていた
+ */
+export function pickQuestIndexes(dateKey, n, count = 3) {
+  let a = parseInt(hash('quest:' + dateKey), 36) >>> 0;
+  const rand = () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  const idx = Array.from({ length: n }, (_, i) => i);
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [idx[i], idx[j]] = [idx[j], idx[i]];
+  }
+  return idx.slice(0, Math.min(count, n));
+}
+
 /** 日付ごとに決まる3つのクエスト */
 export function todayQuests() {
   const pool = QUESTS.filter((q) => !q.ai || aiReady('chat'));
-  let seed = parseInt(hash('quest:' + todayKey()), 36);
-  const picked = [];
-  while (picked.length < 3 && picked.length < pool.length) {
-    seed = (seed * 1103515245 + 12345) % 2147483648;
-    const q = pool[seed % pool.length];
-    if (!picked.includes(q)) picked.push(q);
-  }
+  const picked = pickQuestIndexes(todayKey(), pool.length).map((i) => pool[i]);
   const d = dayRec();
   return picked.map((q) => ({ ...q, v: Math.min(q.target, q.val(d) || 0), done: !!d.qd?.[q.id] }));
 }

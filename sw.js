@@ -1,5 +1,5 @@
 // TripTalk Service Worker（scripts/build-sw.mjs で自動生成）
-const VERSION = 'd16118a54d';
+const VERSION = 'b665052c99';
 const CACHE = 'triptalk-' + VERSION;
 const RUNTIME = 'triptalk-runtime';
 const ASSETS = [
@@ -54,8 +54,10 @@ const ASSETS = [
 ];
 const DEV = ['localhost', '127.0.0.1', '[::1]'].includes(self.location.hostname);
 
+// 新しい版はダウンロードが済んだらすぐ有効にする（アプリ側は、学習中でなければ自動で読み込み直す）。
+// こうしておくと、古い版で不具合が起きていても、アプリを開き直すだけで修正版に切り替わる
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => { if (!self.registration.active) return self.skipWaiting(); }));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (e) => {
@@ -90,15 +92,15 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // 画面遷移: index.html を返す（オフラインでも起動）
+  // 画面遷移: いまの版の index.html を返す（オフラインでも起動）
   if (req.mode === 'navigate') {
-    e.respondWith(caches.match('./index.html').then((hit) => hit || fetch(req)).catch(() => fetch(req)));
+    e.respondWith(caches.open(CACHE).then((c) => c.match('./index.html')).then((hit) => hit || fetch(req)).catch(() => fetch(req)));
     return;
   }
 
-  // 静的ファイル: キャッシュ優先
-  e.respondWith(caches.match(req, { ignoreSearch: true }).then((hit) => hit || fetch(req).then((res) => {
+  // 静的ファイル: いまの版のキャッシュを優先（古い版のファイルが混ざらないように）
+  e.respondWith(caches.open(CACHE).then((c) => c.match(req, { ignoreSearch: true })).then((hit) => hit || fetch(req).then((res) => {
     if (res.ok) { const copy = res.clone(); caches.open(RUNTIME).then((c) => c.put(req, copy)); }
     return res;
-  })));
+  }).catch(() => caches.match(req, { ignoreSearch: true }))));
 });

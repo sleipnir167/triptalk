@@ -39,6 +39,27 @@
   <div id="layer"></div>
   <canvas id="fx" aria-hidden="true"></canvas>
   <noscript>このアプリを使うには JavaScript を有効にしてください。</noscript>
+  <script>
+    // 起動の見張り：20秒たっても起動しないとき（ファイルの読み込み失敗など）は、直し方を表示する
+    setTimeout(function () {
+      if (window.__ttBooted || document.body.classList.contains('ready') || document.querySelector('.boot-error')) return;
+      var d = document.createElement('div');
+      d.className = 'boot-error';
+      d.innerHTML = '<div class="be-card"><div class="be-emoji">🛠️</div><h2>起動に時間がかかっています</h2>' +
+        '<p>学習データは消えていません。電波の良い場所で、下のボタンをお試しください。</p>' +
+        '<button class="btn btn-primary btn-lg" id="be-reload">もう一度読み込む</button>' +
+        '<button class="btn btn-soft" id="be-clean">アプリを最新に入れ直す（データは残ります）</button></div>';
+      document.body.appendChild(d);
+      document.getElementById('be-reload').onclick = function () { location.reload(); };
+      document.getElementById('be-clean').onclick = function () {
+        var done = function () { location.reload(); };
+        var p = navigator.serviceWorker && navigator.serviceWorker.getRegistrations ? navigator.serviceWorker.getRegistrations() : Promise.resolve([]);
+        p.then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); })
+          .then(function () { return window.caches ? caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }) : null; })
+          .then(done, done);
+      };
+    }, 20000);
+  </script>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>

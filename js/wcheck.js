@@ -84,6 +84,7 @@ export function checkEnglish(text, { writing = false } = {}) {
     re.lastIndex = 0;
     let m;
     while ((m = re.exec(t))) {
+      if (!m[0]) { re.lastIndex++; continue; } // 空文字にマッチしても止まらないように
       issues.push({ text: m[0].replace(/^[.!?]\s+/, ''), msg, kind, index: m.index });
       if (!re.global) break;
     }

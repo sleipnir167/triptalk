@@ -1554,3 +1554,12 @@ h1, .results-hero h2 { text-shadow: var(--heading-glow); }
   .magic-hero .hb small { display: none; }
 }
 @media (max-width: 680px) { .trip-banner.unset { flex-wrap: nowrap; } .trip-banner.unset .trip-text { min-width: 0; } }
+
+/* 起動エラー（起動画面より手前に表示） */
+.boot-error { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 20px; background: radial-gradient(900px 600px at 50% 35%, #3a1f8f, #0d0b33 72%); color: #fff; font-family: var(--font); }
+.be-card { max-width: 440px; width: 100%; text-align: center; display: flex; flex-direction: column; gap: 12px; padding: 26px 22px; border-radius: 26px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 211, 110, 0.4); }
+.be-emoji { font-size: 48px; }
+.be-card h2 { font-size: 20px; }
+.be-card p { color: rgba(255, 255, 255, 0.8); margin: 0; }
+.be-card pre { white-space: pre-wrap; word-break: break-word; font-size: 12px; text-align: left; background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 12px; max-height: 140px; overflow: auto; }
+.be-card .btn-soft { background: rgba(255, 255, 255, 0.14); color: #fff; }
